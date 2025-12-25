@@ -1,0 +1,269 @@
+:root {
+    --farbe1: rgba(255,255,255,0.2);
+    --farbe2: white;
+    --farbe3: #38383e;
+}
+
+* {
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: #15202a;
+    font-family: 'Arial', sans-serif;
+    color: var(--farbe2);
+    width: 40%;
+    margin-left: 30%;
+    user-select: none;
+}
+
+body > div {
+    display: flex;
+    margin-top: 20px;
+}
+
+h1 {
+    margin-bottom: 5%;
+    color: white;
+}
+
+img {
+    width: 80px;
+    height: auto;
+    margin-left: 80px;
+}
+
+img:nth-of-type(2) {
+    display: none;
+}
+
+main {
+    position: relative;
+    border-radius: 15px;
+    background-color: rgba(34, 111, 84, 0.6);
+    padding: 30px;
+}
+
+main > div:nth-of-type(1) {
+    display: flex;
+    margin-bottom: 20%;
+    margin-left: 7%;
+}
+
+main > div div:nth-of-type(2) {
+    display: block;
+}
+
+main > div:nth-of-type(2) {
+    display: flex;
+}
+
+#termometer {
+    position: relative;
+    width: 25px;
+    height: 240px;
+    margin-right: 0%;
+    background-color: var(--farbe1);
+    border: 9px solid transparent;
+    border-radius: 20px;
+    z-index: 1;
+}
+
+#termometer::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 21px;
+    bottom: 9px;
+    background-color: var(--farbe3);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+#termometer::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -41px;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    background: #3dcadf;
+    border: 9px solid #497369;
+    border-radius: 50%;
+    z-index: -3;
+}
+
+#temperature {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 0;
+    border-radius: 20px;
+    background: linear-gradient(#f17a65, #3dcadf);
+    background-repeat: no-repeat;
+    background-position: bottom;
+    background-size: 100% 240px;
+    transition: none;
+}
+
+#temperature::before {
+    content: attr(data-value);
+    position: absolute;
+    left: calc(100% + 26px);
+    top: calc(-1em + 5px - 10px);
+    transform: translateY(50%);
+    padding: 5px 14px;
+    background: var(--farbe1);
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+#temperature::after {
+    content: "";
+    position: absolute;
+    left: calc(100% + 14px);
+    top: calc(-1em + 5px + 4px);
+    transform: translateY(50%);
+
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-right: 12px solid rgba(255, 255, 255, 0.2);
+}
+
+#graduations {
+    position: absolute;
+    left: -40px;
+    top: 5%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 12px;
+    color: lightgrey;
+}
+
+#presets {
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    margin-left: 40%;
+}
+
+#presets button {
+    padding: 6px 6px;
+    width: 80px;
+    background-color: var(--farbe1);
+    border: none;
+    border-radius: 6px;
+    color: var(--farbe2);
+    cursor: pointer;
+}
+
+#presets button:hover {
+    background: #15202a;
+}
+
+#room-input, #date-input {
+    padding: 8px 10px;
+    margin-left: 40%;
+    width: 15vw;
+    margin-right: 12px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+}
+
+#room-input {
+    margin-top: 50px;
+}
+
+#room-list {
+    position: absolute;
+    width: 16.5vw;
+    top: 100%;
+    margin-left: 40%;
+    background: #15202a;
+    border-radius: 6px;
+    z-index: 10;
+    max-height: 30vh;
+    overflow-y: auto;
+}
+
+#room-list div {
+    padding: 6px;
+    cursor: pointer;
+}
+
+#room-list div:hover {
+    background: rgba(34, 111, 84, 0.6);
+}
+
+#date-input {
+    margin-right: 50px;
+    margin-top: 10px;
+    color: grey;
+}
+
+#submit-btn {
+    padding: 10px 15px;
+    border: 1px solid white;
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+#submit-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    border: 1px dashed white;
+}
+
+#feedback {
+    margin: 0 0 0 30px;
+    padding: 10px;
+    font-size: 15px;
+}
+
+@media (max-width: 768px) {
+    body {
+        width: 80%;
+        margin-left: 10%;        
+    }
+ 
+    img {
+        margin-left: -30px;
+        opacity: 0.2;
+    }
+    
+    main > div:nth-of-type(1) {
+        margin-left: 13%;
+    }
+    
+    #temperature:after {
+        top: calc(-1em + 3px + 4px);
+    }
+    
+    #presets {
+        margin-left: 70%;
+    }
+    
+    #presets button {
+        padding: 6px 6px;
+        width: 70px;
+    }
+    
+    #room-input {
+        margin-top: 190px;
+    }
+    
+    #room-input, #date-input, #room-list {
+        margin-left: -19vw;
+        width: 155%;
+    }
+    
+    #room-list {
+        width: 169%;
+    }
+}

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Temperaturerfassung RoRo</title>
+    <meta name="author" content="&Eacute;mile Jeremias Ruff">        
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.ico">
+
+    <link rel="stylesheet" href="stylesheet.css" type="text/css">
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<div>
+    <h1>Temperaturerfassung</h1>
+    <img src="b/logo.png" alt="Logo des Klimarates RoRo">
+</div>
+
+<main>
+    <div>
+        <div id="termometer">
+            <div id="temperature" data-value="25°C"></div>
+            <div id="graduations">
+                <span>40°</span>
+                <span>30°</span>
+                <span>20°</span>
+                <span>10°</span>
+            </div></div>
+
+        <div>
+            <div id="presets">
+                <button data-temp="23">23°</button>
+                <button data-temp="22">22°</button>
+                <button data-temp="21">21°</button>
+                <button data-temp="20">20°</button>
+            </div>
+            
+            <input id="room-input" type="text" inputmode="numeric" placeholder="Raum eingeben…" autocomplete="off">    
+            <div style="position: relative;"><div id="room-list"></div></div>
+            <input id="date-input" type="datetime-local" value="">
+        </div>
+    </div>
+
+    <div>
+        <button id="submit-btn">Speichern</button>
+        <p id="feedback"></p>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const y = new Date().getFullYear();
+const mo = String(new Date().getMonth() + 1).padStart(2, '0');
+const d = String(new Date().getDate()).padStart(2, '0');
+const h = String(new Date().getHours()).padStart(2, '0');
+const mi = String(new Date().getMinutes()).padStart(2, '0');
+
+document.getElementById('date-input').value = `${y}-${mo}-${d}T${h}:${mi}`;
+
+const units = { Celcius: "°C" };
+const config = { minTemp: 10, maxTemp: 40, unit: "Celcius" };
+
+const thermometer = document.getElementById("termometer");
+const temperature = document.getElementById("temperature");
+const buttons = document.querySelectorAll("#presets button");
+
+let isDragging = false;
+let currentValue = 25;
+
+function clamp(v, min, max) {
+    return Math.min(Math.max(v, min), max);
+}
+
+function render(value) {
+    currentValue = value;
+    const percent = (value - config.minTemp) / (config.maxTemp - config.minTemp);
+    temperature.style.height = (percent * 100) + "%";
+    temperature.dataset.value = Math.round(value) + units[config.unit];
+}
+
+function updateFromClientY(y) {
+    const rect = thermometer.getBoundingClientRect();
+    const offset = clamp(rect.bottom - y, 0, rect.height);
+    const percent = offset / rect.height;
+    const value = config.minTemp + percent * (config.maxTemp - config.minTemp);
+    render(value);
+}
+
+function start(e) {
+    isDragging = true;
+    move(e);
+}
+
+function move(e) {
+    if (!isDragging) return;
+
+    // wichtig für Mobile: Seite nicht scrollen
+    if (e.cancelable) e.preventDefault();
+
+    const y = e.touches ? e.touches[0].clientY : e.clientY;
+    updateFromClientY(y);
+}
+
+function end() {
+    isDragging = false;
+}
+
+// Maus
+thermometer.addEventListener("mousedown", start);
+document.addEventListener("mousemove", move);
+document.addEventListener("mouseup", end);
+
+// Touch – mit passive:false + preventDefault
+thermometer.addEventListener("touchstart", (e) => {
+    if (e.cancelable) e.preventDefault();
+    start(e);
+}, { passive: false });
+
+document.addEventListener("touchmove", (e) => {
+    if (isDragging && e.cancelable) e.preventDefault();
+    move(e);
+}, { passive: false });
+
+document.addEventListener("touchend", end);
+
+function animateTo(target) {
+    const start = currentValue;
+    const diff = target - start;
+    const duration = 250;
+    const startTime = performance.now();
+    function step(time) {
+        const t = clamp((time - startTime) / duration, 0, 1);
+        render(start + diff * t);
+        if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+}
+
+buttons.forEach(btn => {
+    btn.addEventListener("click", () => animateTo(Number(btn.dataset.temp)));
+});
+
+render(currentValue);
+
+const rooms = [
+"Mehrzweckraum","Schülerratsbüro","Bibliothek","Aula",
+"010","014","016","017",
+"105","106","107","108","109","110","111","117","118","119",
+"121","122","123","127","128","129","130",
+"205","206","207","208","209","210","211","215","216","217",
+"219","220","221","222","225","226","227","228",
+"301","302","303","304","305","306","307","308","309",
+"313","314","315","316",
+"401","402","403","404","405","406","407","408","409","410"
+];
+
+const roomInput = document.getElementById("room-input");
+const roomList = document.getElementById("room-list");
+
+function normalizeRoom(v) {
+    const digits = v.match(/\d+/g);
+    if (digits) return digits.join("");
+    return v.trim();
+}
+
+function showRooms(list) {
+    roomList.innerHTML = "";
+    list.forEach(r => {
+        const div = document.createElement("div");
+        div.textContent = r;
+        div.onclick = () => {
+            roomInput.value = r;
+            roomList.innerHTML = "";
+        };
+        roomList.appendChild(div);
+    });
+}
+
+roomInput.addEventListener("input", () => {
+    const val = roomInput.value.toLowerCase();
+    showRooms(rooms.filter(r => r.toLowerCase().startsWith(val)));
+});
+
+roomInput.addEventListener("focus", () => showRooms(rooms));
+
+document.addEventListener("click", e => {
+    if (!roomList.contains(e.target) && e.target !== roomInput) {
+        roomList.innerHTML = "";
+    }
+});
+
+const client = supabase.createClient(
+    "https://euuptkidjsquvhohvicv.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1dXB0a2lkanNxdXZob2h2aWN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwMDk4OTksImV4cCI6MjA3MDU4NTg5OX0.O1isV0Ove_Tb1ruXqY_dlD4UdQGM174eVw9Kp_22YO4"
+);
+
+document.getElementById("submit-btn").addEventListener("click", async () => {
+    const feedback = document.getElementById("feedback");
+    feedback.textContent = "";
+
+    const room = normalizeRoom(roomInput.value);
+    const temp = Math.round(currentValue * 10) / 10;
+    const dateInput = document.getElementById("date-input");
+
+    if (!room) {
+        feedback.textContent = "❌ Raum eintragen";
+        feedback.style.color = "red";
+        return;
+    }
+
+    const payload = { room, temp };
+
+    if (dateInput.value) {
+        payload.date = dateInput.value;
+    }
+
+    const { error } = await client.from("temp_mess").insert(payload);
+
+    if (error) {
+        feedback.textContent = "❌ Oops! We broke the matrix. Someone don't call Neo!";
+        feedback.style.color = "red";
+        console.log(error);
+    } else {
+        feedback.textContent = "✅ Gespeichert";
+        feedback.style.color = "lightgreen";
+    }
+});
+</script>
+
+</body>
+</html>
