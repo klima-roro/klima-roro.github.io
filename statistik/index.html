@@ -77,6 +77,18 @@
 </div>
 
 
+<h3>Extrema</h3>
+<button id="topTen">Berechnen</button>
+
+<div id="extrema">
+  <div><p>❄️ Kälteste</p>
+       <table><tbody id="coldestList"></tbody></table></div>
+
+  <div><p>🔥 Wärmste</p>
+       <table><tbody id="warmestList"></tbody></table></div>
+</div>
+
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const client = supabase.createClient(
@@ -672,6 +684,84 @@ document.getElementById("applyFilter").addEventListener("click", updateTemperatu
 
 updateTemperatures();
 </script>
+<script>
+async function calculateTopTen() {
+
+  const dateMinVal = document.getElementById('dateMin').value;
+  const dateMaxVal = document.getElementById('dateMax').value;
+  const timeMinVal = document.getElementById('labelMin').textContent;
+  const timeMaxVal = document.getElementById('labelMax').textContent;
+
+  let query = client.from('temp_mess').select('*');
+
+  if (dateMinVal) query = query.gte('date', dateMinVal + 'T00:00:00');
+  if (dateMaxVal) query = query.lte('date', dateMaxVal + 'T23:59:59');
+
+  const { data } = await query;
+  if (!data) return;
+
+  const excludedRooms = new Set([
+    ...tractRooms.C,
+    ...tractRooms.M,
+    ...tractRooms.E
+  ]);
+
+  const validRooms = allRooms.filter(r => !excludedRooms.has(r));
+
+  const roomBuckets = {};
+  validRooms.forEach(r => roomBuckets[r] = []);
+
+  data.forEach(d => {
+    const room = String(d.room);
+    if (!roomBuckets[room]) return;
+    if (isNaN(d.temp)) return;
+
+    const hhmm = new Date(d.date).toTimeString().slice(0,5);
+    if (hhmm < timeMinVal || hhmm > timeMaxVal) return;
+
+    roomBuckets[room].push(Number(d.temp));
+  });
+
+  const roomAverages = Object.entries(roomBuckets)
+    .filter(([_, arr]) => arr.length)
+    .map(([room, arr]) => ({
+      room,
+      avg: arr.reduce((a,b)=>a+b,0) / arr.length
+    }));
+
+  const coldest = [...roomAverages]
+    .sort((a,b)=>a.avg-b.avg)
+    .slice(0,10);
+
+  const warmest = [...roomAverages]
+    .sort((a,b)=>b.avg-a.avg)
+    .slice(0,10);
+
+  const coldBody = document.getElementById('coldestList');
+  const warmBody = document.getElementById('warmestList');
+
+  coldBody.innerHTML = '';
+  warmBody.innerHTML = '';
+
+  coldest.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.room}</td><td>${r.avg.toFixed(1)} °C</td>`;
+    coldBody.appendChild(tr);
+  });
+
+  warmest.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${r.room}</td><td>${r.avg.toFixed(1)} °C</td>`;
+    warmBody.appendChild(tr);
+  });
+
+  document.getElementById('extrema').style.display = 'flex';
+}
+
+document.getElementById('topTen')
+  .addEventListener('click', calculateTopTen);
+</script>
+
 
 </body>
 </html>

@@ -218,10 +218,48 @@
         #tempChart .y-achse, #hourChart .y-achse {
             padding-top: 15px;
         }
+            
+            #extrema {
+                display: none;
+            }
+            
+            #topTen {
+                background-color: rgba(255, 255, 255, 0.3);
+                border: 1px solid white;
+                border-radius: 5px;
+                padding: 5px 20px;
+                height: 30px;
+                color: white;
+            }
+            
+            #topTen:hover {
+                background-color: rgba(255, 255, 255, 0.1);
+                border: 1px dashed white;
+            }
+            
+            #extrema div:nth-of-type(2) {
+                margin-left: 50px;
+            }
+            
+            #extrema p {
+                margin: 30px 0 5px 0;
+                padding: 0;
+            }
+            
+            #extrema table td {
+                border: 1px solid white;
+                margin: 0;
+                padding: 5px 10px;
+            }
         
         @media (max-width: 768px) {
             h1 {
                 margin: 40px 0 15px 15px;
+            }
+            
+            h3 {
+                margin-top: 70px;
+                margin-bottom: 0;
             }
         
             .wrapper-1 {
@@ -288,10 +326,5 @@
             
             .wrapper-2 > div {
                 width: 100%;
-            }
-            
-            h3 {
-                margin-top: 70px;
-                margin-bottom: 0;
             }
         }
