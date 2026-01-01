@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Statistiken der Temperaturerfassung RoRo</title>
+    <meta name="author" content="&Eacute;mile Jeremias Ruff">        
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.ico">
+
+    <link rel="stylesheet" href="stylesheet.css" type="text/css">
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<h1>Statistiken</h1>
+
+<div class="wrapper-1">
+    <div class="filter-box">
+
+        <label>Raum: <select id="roomSelect"></select></label>
+        <button class="datePreset" data-type="lastWeek"><span class="m-weg">letzter</span><span class="m-da"></span> Woche</button>
+        <button class="datePreset" data-type="lastMonth"><span class="m-weg">letzter</span><span class="m-da"></span>Monat</button>
+        <!-- <p>optionaler Filter</p> -->
+        
+        <div class="range-wrap">
+            <div class="slider-track"></div>
+            <div class="slider-range" id="sliderRange"></div>
+            <input type="range" id="timeMin" min="0" max="1440" step="15" value="0">
+            <input type="range" id="timeMax" min="0" max="1440" step="15" value="1440">
+        </div>
+        <div class="time-labels">
+            <span id="labelMin">00:00</span>
+            <span id="labelMax">23:59</span>
+        </div>
+
+        <div class="date-div">
+            <label>von: <input type="date" id="dateMin"></label>
+            <label>bis: <input type="date" id="dateMax"></label>            
+            <button id="applyFilter"><img src="../b/refresh.png" alt="Filter anwenden"></button>
+        </div>
+    </div>
+    <div>
+        
+<svg class="map" xmlns="http://www.w3.org/2000/svg" viewBox="-50 -50 2300 1650" preserveAspectRatio="xMidYMid meet">
+  <g transform="matrix(1,0,0,1,1019.637,1149.014)">
+    <g id="1"><rect transform="matrix(0.999995,0.00307654,-0.00307654,0.999995,-474.904,-295.193)" x="-544.36" y="-123.05" width="1088.71" height="246.1"/>
+              <text id="label1"></text></g>
+
+    <g id="2"><rect transform="matrix(0.994823,-0.101613,0.101613,0.994823,-387.939,158.168)" x="-393.18" y="-201.57" width="786.36" height="403.14" />
+              <text id="label2" style="display: none;"></text></g>
+
+    <g id="3"><path id="dritterNdNennbarerPath" d="M490.92,-411.37 L888.73,-376.77 L862.23,-72.07 L464.42,-106.68 L490.92,-411.37 Z M514.78,-106.57 L842.77,-78.03 L838.55,-29.55 L510.56,-58.08 L514.78,-106.57 Z M299.37,-577.66 L518.73,-558.58 L479.41,-106.57 L260.05,-125.65 L299.37,-577.66 Z M896.81,-545.26 L1126.01,-525.32 L1084.68,-50.21 L855.48,-70.15 L896.81,-545.26 Z" />
+              <text id="label3"></text></g>
+
+    <g id="4"><rect transform="matrix(0.999895,-0.014467,0.014467,0.999895,170.125,-236.237)" x="-110.09" y="-27.29" width="220.18" height="54.58" />
+              <text id="label4" style="display: none;"></text></g>
+
+    <g id="5"><rect transform="matrix(0.996489,0.083719,-0.083719,0.996489,1052.995,-841.672)" x="-107.92" y="-299.36" width="215.84" height="598.72" />
+              <text id="label5"></text></g>
+  </g>
+
+  <path d="M -1.061 723.909 L 1087.036 732.846 L 1091.504 887.011 L 1292.59 882.543 L 1317.167 567.509 L 1538.361 594.32 L 1524.956 739.549 L 1900.316 775.297 L 1913.721 601.023 L 2145.082 623.366 L 2100.396 1099.269 L 1856.859 1072.457 L 1856.859 1117.143 L 1528.419 1088.097 L 1528.419 1043.411 L 1284.882 1021.069 L 1284.882 938.4 L 1090.499 938.4 L 1090.499 978.617 L 1.787 971.914 L -1.061 723.909 Z" />
+  <path d="M 1002.747 1065.754 L 1047.433 1467.926 L 263.199 1546.126 L 220.747 1143.954 L 1002.747 1065.754 Z" />
+  <path d="M 2155.578 614.407 L 2201.05 18.88 L 1986.503 -1.229 L 1941.817 597.56 L 2155.578 614.407 Z" />
+
+
+</svg><!-- 1m, 2t, 3e, 5c -->
+
+    </div>
+</div>
+
+<div class="wrapper-2">
+    <div><h3>Durchschnittlicher Monatsverlauf</h3>
+         <svg id="tempChart"></svg></div>
+
+    <div><h3>Durchschnittlicher Tagesverlauf</h3>
+         <svg id="hourChart"></svg></div>    
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const client = supabase.createClient(
+  "https://euuptkidjsquvhohvicv.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1dXB0a2lkanNxdXZob2h2aWN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwMDk4OTksImV4cCI6MjA3MDU4NTg5OX0.O1isV0Ove_Tb1ruXqY_dlD4UdQGM174eVw9Kp_22YO4"
+);
+
+// ----------------
+// Räume
+// ----------------
+const allRooms = [
+  "105","106","107","108","109","110","111",
+  "117","118","119",
+  "205","206","207","208","209","210","211",
+  "215","216","217",
+  "403","404","406","407",
+  "Turnhalle" // normaler Raumname aus DB
+];
+
+// Gebäudetrakte (hier definieren)
+const tractRooms = {
+  M:["205","206","207","208","209","210","211","215","216","217"],
+  E:["403","404"],
+  C:["403","407"]
+};
+
+// Schule gesamt
+function allSchoolRooms() {
+  return [
+    ...allRooms,
+    ...tractRooms.C,
+    ...tractRooms.M,
+    ...tractRooms.E
+  ];
+}
+
+// Auswahl füllen
+const roomSelect = document.getElementById('roomSelect');
+
+[
+  {value:"SCHULE", label:"Schule gesamt"},
+  {value:"C", label:"Carus-Gebäude"},
+  {value:"M", label:"Melanchthon-Gebäude"},
+  {value:"E", label:"Erlwein-Gebäude"}
+].forEach(o=>{
+  const opt=document.createElement("option");
+  opt.value=o.value;
+  opt.textContent=o.label;
+  roomSelect.appendChild(opt);
+});
+
+// normale Räume
+allRooms.forEach(r=>{
+  const opt=document.createElement("option");
+  opt.value=r;
+  opt.textContent=r;
+  roomSelect.appendChild(opt);
+});
+
+// vorausgewählt, SCHULE
+roomSelect.value = "215";
+
+// liefert Liste der aktuell gewählten Räume
+function getSelectedRooms(){
+  const sel = roomSelect.value;
+  if(sel==="SCHULE") return allSchoolRooms();
+  if(sel==="C") return tractRooms.C;
+  if(sel==="M") return tractRooms.M;
+  if(sel==="E") return tractRooms.E;
+  return [sel]; // Einzelraum
+}
+
+// ----------------
+// Slider
+// ----------------
+const minSlider = document.getElementById("timeMin");
+const maxSlider = document.getElementById("timeMax");
+const labelMin  = document.getElementById("labelMin");
+const labelMax  = document.getElementById("labelMax");
+const sliderRange = document.getElementById("sliderRange");
+
+function minsToTime(mins) {
+  const h = String(Math.floor(mins / 60)).padStart(2, '0');
+  const m = String(mins % 60).padStart(2, '0');
+  return `${h}:${m}`;
+}
+
+let rafPending = false;
+function updateSliderSmooth() {
+  if (rafPending) return;
+  rafPending = true;
+  requestAnimationFrame(() => {
+    rafPending = false;
+    let min = Number(minSlider.value);
+    let max = Number(maxSlider.value);
+    if (min > max) [min, max] = [max, min];
+    minSlider.value = min;
+    maxSlider.value = max;
+    labelMin.textContent = minsToTime(min);
+    labelMax.textContent = minsToTime(max);
+    const percentMin = (min / 1440) * 100;
+    const percentMax = (max / 1440) * 100;
+    sliderRange.style.transform =
+      `translate(${percentMin}%, -50%) scaleX(${(percentMax - percentMin) / 100})`;
+  });
+}
+
+minSlider.addEventListener("input", updateSliderSmooth);
+maxSlider.addEventListener("input", updateSliderSmooth);
+updateSliderSmooth();
+
+// ----------------
+// Diagramm
+// ----------------
+function drawTempChart(data) {
+  const svg = document.getElementById('tempChart');
+  svg.innerHTML = '';
+  const width = svg.getBoundingClientRect().width;
+  const height = svg.getBoundingClientRect().height;
+  const padding = 40;
+
+  if (!data.length) return;
+
+  // Durchschnitt pro Tag
+  const daily = {};
+  data.forEach(d => {
+  if (!d.date || isNaN(Number(d.temp))) return; // Datensätze ohne Datum oder Temp überspringen
+  const day = d.date.split('T')[0];
+  if (!daily[day]) daily[day] = [];
+  daily[day].push(Number(d.temp));
+});
+
+
+  const averagedData = Object.entries(daily).map(([day, temps]) => ({
+    date: day,
+    temp: temps.reduce((a,b)=>a+b,0)/temps.length
+  }))
+  .sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+  const overallAvg =
+    averagedData.reduce((s,d)=>s+d.temp,0) / averagedData.length;
+
+  const temps = averagedData.map(d=>d.temp).concat([overallAvg]);
+  const times = averagedData.map(d=>new Date(d.date).getTime());
+
+  const minTemp = Math.min(...temps);
+  const maxTemp = Math.max(...temps);
+  const tempRange = maxTemp - minTemp || 1;
+
+  const minTime = Math.min(...times);
+  const maxTime = Math.max(...times);
+  const timeRange = maxTime - minTime || 1;
+
+  const x = ts => padding + (ts - minTime)/timeRange*(width-2*padding);
+  const y = t => padding + (maxTemp - t)/tempRange*(height-2*padding);
+
+  // Achsen
+  const axesColor = '#aaa';
+  const xAxis = document.createElementNS("http://www.w3.org/2000/svg","line");
+  xAxis.setAttribute('x1',padding); xAxis.setAttribute('y1',height-padding);
+  xAxis.setAttribute('x2',width-padding); xAxis.setAttribute('y2',height-padding);
+  xAxis.setAttribute('stroke',axesColor); svg.appendChild(xAxis);
+
+  const yAxis = document.createElementNS("http://www.w3.org/2000/svg","line");
+  yAxis.setAttribute('x1',padding); yAxis.setAttribute('y1',padding);
+  yAxis.setAttribute('x2',padding); yAxis.setAttribute('y2',height-padding);
+  yAxis.setAttribute('stroke',axesColor); svg.appendChild(yAxis);
+
+  // y-Hilfslinien
+  const ySteps = 5;
+  for(let i=0;i<=ySteps;i++){
+    const tempVal = minTemp + i*(tempRange/ySteps);
+    const yPos = y(tempVal);
+
+    const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+    line.setAttribute('x1',padding); line.setAttribute('y1',yPos);
+    line.setAttribute('x2',width-padding); line.setAttribute('y2',yPos);
+    line.setAttribute('stroke','#eee'); svg.appendChild(line);
+
+    const label = document.createElementNS("http://www.w3.org/2000/svg","text");
+    label.setAttribute('x',padding-5); label.setAttribute('y',yPos+4);
+    label.setAttribute('text-anchor','end');
+    label.textContent = Math.round(tempVal) +'°C';
+    svg.appendChild(label);
+  }
+
+  // x-Achse Labels – ADAPTIV reduziert
+  const maxLabels = 2.5;
+  const step = Math.max(1, Math.floor(averagedData.length / maxLabels));
+
+  for(let i=0;i<averagedData.length;i+=step){
+    const ts = new Date(averagedData[i].date).getTime();
+    const xPos = x(ts);
+
+    const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+    line.setAttribute('x1',xPos); line.setAttribute('y1',padding);
+    line.setAttribute('x2',xPos); line.setAttribute('y2',height-padding);
+    line.setAttribute('stroke','#f0f0f0');
+    svg.appendChild(line);
+
+    const label = document.createElementNS("http://www.w3.org/2000/svg","text");
+    label.setAttribute('x',xPos);
+    label.setAttribute('y',height-padding+25);
+    label.setAttribute('text-anchor','middle');
+    label.textContent = averagedData[i].date;
+    svg.appendChild(label);
+  }
+
+  // Linie aller Tagesdurchschnitte
+  const points = averagedData
+    .map(d=>`${x(new Date(d.date).getTime())},${y(d.temp)}`)
+    .join(' ');
+
+  const polyline = document.createElementNS("http://www.w3.org/2000/svg","polyline");
+  polyline.setAttribute('points',points);
+  polyline.setAttribute('fill','none');
+  polyline.setAttribute('stroke','black');
+  polyline.setAttribute('stroke-width','2');
+  svg.appendChild(polyline);
+
+  // Gesamtdurchschnitt – horizontale Linie
+  const avgLine = document.createElementNS("http://www.w3.org/2000/svg","line");
+  avgLine.setAttribute('x1',padding);
+  avgLine.setAttribute('x2',width-padding);
+  avgLine.setAttribute('y1',y(overallAvg));
+  avgLine.setAttribute('y2',y(overallAvg));
+  avgLine.setAttribute('stroke','red');
+  avgLine.setAttribute('stroke-dasharray','6,4');
+  avgLine.setAttribute("id","avgLine");
+  svg.appendChild(avgLine);
+
+  // Tooltip-Elemente
+  const marker = document.createElementNS("http://www.w3.org/2000/svg","circle");
+  marker.setAttribute('r',5);
+  marker.setAttribute('fill','red');
+  marker.style.display = 'none';
+  svg.appendChild(marker);
+
+  const vLine = document.createElementNS("http://www.w3.org/2000/svg","line");
+  vLine.setAttribute('stroke','#777');
+  vLine.setAttribute('stroke-dasharray','4,3');
+  vLine.style.display = 'none';
+  svg.appendChild(vLine);
+
+  const tooltip = document.createElementNS("http://www.w3.org/2000/svg","text");
+  tooltip.setAttribute('font-size','12px');
+  tooltip.setAttribute('fill','black');
+  tooltip.style.display = 'none';
+  svg.appendChild(tooltip);
+
+  // Pointer / Touch Ereignis
+  function onMove(evt){
+    const rect = svg.getBoundingClientRect();
+    const clientX = evt.clientX ?? evt.touches?.[0]?.clientX;
+    if (!clientX) return;
+
+    const px = clientX - rect.left;
+    const tsGuess = minTime + (px - padding)/(width-2*padding)*timeRange;
+
+    let nearest = averagedData[0];
+    let best = Infinity;
+    averagedData.forEach(d=>{
+      const t = new Date(d.date).getTime();
+      const diff = Math.abs(t - tsGuess);
+      if (diff < best){ best = diff; nearest = d; }
+    });
+
+    const nx = x(new Date(nearest.date).getTime());
+    const ny = y(nearest.temp);
+
+    marker.setAttribute('cx',nx);
+    marker.setAttribute('cy',ny);
+    marker.style.display = '';
+
+    vLine.setAttribute('x1',nx);
+    vLine.setAttribute('x2',nx);
+    vLine.setAttribute('y1',padding);
+    vLine.setAttribute('y2',height-padding);
+    vLine.style.display = '';
+
+    tooltip.setAttribute('x',nx+8);
+    tooltip.setAttribute('y',ny-8);
+    tooltip.textContent =
+      `${nearest.date}  |  ${nearest.temp.toFixed(2)}°C`;
+    tooltip.style.display = '';
+  }
+
+  function onLeave(){
+    marker.style.display = 'none';
+    vLine.style.display = 'none';
+    tooltip.style.display = 'none';
+  }
+
+  svg.addEventListener('pointermove', onMove);
+  svg.addEventListener('pointerdown', onMove);
+  svg.addEventListener('pointerup', onLeave);
+}
+
+// ----------------
+// Daten abrufen + filtern
+// ----------------
+async function updateChart() {
+  const selectedRooms = getSelectedRooms(); // neu: Raumliste
+  const dateMinVal = document.getElementById('dateMin').value;
+  const dateMaxVal = document.getElementById('dateMax').value;
+  const timeMinVal = labelMin.textContent || '00:00';
+  const timeMaxVal = labelMax.textContent || '23:59';
+
+  let query = client.from('temp_mess').select('*');
+
+  if (dateMinVal) query = query.gte('date', dateMinVal + 'T00:00:00');
+  if (dateMaxVal) query = query.lte('date', dateMaxVal + 'T23:59:59');
+
+  let { data, error } = await query;
+  if (!data) data = [];
+
+  let filtered = data.filter(d => {
+    if (!d.room || !selectedRooms.includes(String(d.room))) return false;
+
+    const ts = new Date(d.date);
+    const hhmm = ts.toTimeString().slice(0,5);
+
+    const includeByTime =
+      timeMinVal && timeMaxVal
+      ? (hhmm >= timeMinVal && hhmm <= timeMaxVal)
+      : true;
+
+    return includeByTime && !isNaN(d.temp);
+  }).map(d => ({ date: d.date, temp: Number(d.temp) }));
+
+  filtered.sort((a,b)=>new Date(a.date)-new Date(b.date));
+
+  drawTempChart(filtered);
+}
+
+// Events
+document.getElementById('applyFilter').addEventListener('click', updateChart);
+
+document.querySelectorAll('.datePreset').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const today = new Date();
+    let start, end;
+    switch(btn.dataset.type) {
+      case 'lastWeek':
+        end = new Date(today); end.setDate(end.getDate()-1);
+        start = new Date(end); start.setDate(start.getDate()-6);
+        break;
+      case 'lastMonth':
+        end = new Date(today); end.setDate(end.getDate()-1);
+        start = new Date(end.getFullYear(), end.getMonth()-1, end.getDate()+1);
+        break;
+      default: return;
+    }
+    document.getElementById('dateMin').value = start.toISOString().slice(0,10);
+    document.getElementById('dateMax').value = end.toISOString().slice(0,10);
+    updateChart();
+  });
+});
+
+// initial
+updateChart();
+</script>
+<script>
+async function drawHourlyChart() {
+
+  const svg = document.getElementById('hourChart');
+  svg.innerHTML = '';
+
+  const width  = svg.getBoundingClientRect().width;
+  const height = svg.getBoundingClientRect().height;
+  const padding = 40;
+
+  const room = document.getElementById('roomSelect').value;
+  const dateMinVal = document.getElementById('dateMin').value;
+  const dateMaxVal = document.getElementById('dateMax').value;
+  const timeMinVal = document.getElementById('labelMin').textContent;
+  const timeMaxVal = document.getElementById('labelMax').textContent;
+
+  let query = client.from('temp_mess').select('*');
+  if (dateMinVal) query = query.gte('date', dateMinVal + 'T00:00:00');
+  if (dateMaxVal) query = query.lte('date', dateMaxVal + 'T23:59:59');
+
+  let { data } = await query;
+  if (!data || !data.length) return;
+
+  // Stunden-KÃ¶rbe
+  const buckets = Array.from({ length: 24 }, () => []);
+
+  data.forEach(d => {
+    if (Number(d.room) !== Number(room)) return;
+    if (isNaN(d.temp)) return;
+
+    const ts = new Date(d.date);
+    const hhmm = ts.toTimeString().slice(0,5);
+    if (hhmm < timeMinVal || hhmm > timeMaxVal) return;
+
+    buckets[ts.getHours()].push(Number(d.temp));
+  });
+
+  const hourlyData = buckets.map((arr, h) => ({
+    hour: h,
+    temp: arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : null
+  })).filter(d => d.temp !== null);
+
+  if (!hourlyData.length) return;
+
+  // Skalierung
+  const temps = hourlyData.map(d=>d.temp);
+  const minTemp = Math.min(...temps);
+  const maxTemp = Math.max(...temps);
+  const range = maxTemp - minTemp || 1;
+
+  const x = h => padding + (h/23)*(width-2*padding);
+  const y = t => padding + (maxTemp - t)/range*(height-2*padding);
+
+  // Achsen
+  const axesColor = '#aaa';
+
+  const xAxis = document.createElementNS("http://www.w3.org/2000/svg","line");
+  xAxis.setAttribute('x1',padding);
+  xAxis.setAttribute('y1',height-padding);
+  xAxis.setAttribute('x2',width-padding);
+  xAxis.setAttribute('y2',height-padding);
+  xAxis.setAttribute('stroke',axesColor);
+  svg.appendChild(xAxis);
+
+  const yAxis = document.createElementNS("http://www.w3.org/2000/svg","line");
+  yAxis.setAttribute('x1',padding);
+  yAxis.setAttribute('y1',padding);
+  yAxis.setAttribute('x2',padding);
+  yAxis.setAttribute('y2',height-padding);
+  yAxis.setAttribute('stroke',axesColor);
+  svg.appendChild(yAxis);
+
+  // Y-Label + Hilfslinien
+  const ySteps = 5;
+  for (let i=0; i<=ySteps; i++) {
+    const tVal = minTemp + i*(range/ySteps);
+    const yPos = y(tVal);
+
+    const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+    line.setAttribute('x1',padding);
+    line.setAttribute('x2',width-padding);
+    line.setAttribute('y1',yPos);
+    line.setAttribute('y2',yPos);
+    line.setAttribute('stroke','#eee');
+    svg.appendChild(line);
+
+    const label = document.createElementNS("http://www.w3.org/2000/svg","text");
+    label.setAttribute('x',padding-6);
+    label.setAttribute('y',yPos+4);
+    label.setAttribute('text-anchor','end');
+    label.textContent = Math.round(tVal) +'°C';
+    svg.appendChild(label);
+  }
+
+  // X-Labels + Hilfslinien
+  const xLabels = [0, 6, 12, 18, 23];
+
+  xLabels.forEach(h => {
+    const xPos = x(h);
+
+    const grid = document.createElementNS("http://www.w3.org/2000/svg","line");
+    grid.setAttribute('x1',xPos);
+    grid.setAttribute('x2',xPos);
+    grid.setAttribute('y1',padding);
+    grid.setAttribute('y2',height-padding);
+    grid.setAttribute('stroke','#f0f0f0');
+    svg.appendChild(grid);
+
+    const label = document.createElementNS("http://www.w3.org/2000/svg","text");
+    label.setAttribute('x',xPos);
+    label.setAttribute('y',height-padding+25);
+    label.setAttribute('text-anchor','middle');
+    label.textContent = String(h).padStart(2,'0');
+    svg.appendChild(label);
+  });
+
+  // Graf
+  const points = hourlyData
+    .map(d=>`${x(d.hour)},${y(d.temp)}`)
+    .join(' ');
+
+  const poly = document.createElementNS("http://www.w3.org/2000/svg","polyline");
+  poly.setAttribute('points',points);
+  poly.setAttribute('fill','none');
+  poly.setAttribute('stroke','black');
+  poly.setAttribute('stroke-width','2');
+  svg.appendChild(poly);
+
+  // Tooltip
+  const marker = document.createElementNS("http://www.w3.org/2000/svg","circle");
+  marker.setAttribute('r',5);
+  marker.setAttribute('fill','red');
+  marker.style.display = 'none';
+  svg.appendChild(marker);
+
+  const vLine = document.createElementNS("http://www.w3.org/2000/svg","line");
+  vLine.setAttribute('stroke','#777');
+  vLine.setAttribute('stroke-dasharray','4,3');
+  vLine.style.display = 'none';
+  svg.appendChild(vLine);
+
+  const tooltip = document.createElementNS("http://www.w3.org/2000/svg","text");
+  tooltip.setAttribute('font-size','12px');
+  tooltip.style.display = 'none';
+  svg.appendChild(tooltip);
+
+  function onMove(evt){
+    const rect = svg.getBoundingClientRect();
+    const px = (evt.clientX ?? evt.touches?.[0]?.clientX) - rect.left;
+
+    const hourGuess = Math.round((px-padding)/(width-2*padding)*23);
+    const d = hourlyData.find(v=>v.hour===hourGuess);
+    if (!d) return;
+
+    const cx = x(d.hour);
+    const cy = y(d.temp);
+
+    marker.setAttribute('cx',cx);
+    marker.setAttribute('cy',cy);
+    marker.style.display = '';
+
+    vLine.setAttribute('x1',cx);
+    vLine.setAttribute('x2',cx);
+    vLine.setAttribute('y1',padding);
+    vLine.setAttribute('y2',height-padding);
+    vLine.style.display = '';
+
+    tooltip.setAttribute('x',cx+8);
+    tooltip.setAttribute('y',cy-8);
+    tooltip.textContent =
+      `${String(d.hour).padStart(2,'0')}:00  |  ${d.temp.toFixed(2)} °C`;
+    tooltip.style.display = '';
+  }
+
+  function onLeave(){
+    marker.style.display='none';
+    vLine.style.display='none';
+    tooltip.style.display='none';
+  }
+
+  svg.addEventListener('pointermove', onMove);
+  svg.addEventListener('pointerdown', onMove);
+  svg.addEventListener('pointerleave', onLeave);
+}
+
+// bestehender Button triggert auch dieses Diagramm
+document.getElementById('applyFilter')
+  .addEventListener('click', drawHourlyChart);
+
+// initial
+drawHourlyChart();
+</script>
+
+<script>
+// 1m, 2t, 3e, 5c
+const buildingRooms = {
+  1:["205","206","207","208","209","210","211","215","216","217"],
+  2:["403"],
+  3:["403","404"],
+  4:["105","106","107","108","109","110","111","117","118","119"],
+  5:["403","407"]
+};
+
+async function updateTemperatures(){
+  const {data} = await client.from("temp_mess").select("*");
+  if(!data) return;
+
+  Object.keys(buildingRooms).forEach(id=>{
+    const rooms = buildingRooms[id];
+    const temps = data
+      .filter(r=>rooms.includes(String(r.room)))
+      .map(r=>Number(r.temp))
+      .filter(n=>!isNaN(n));
+
+    if(!temps.length) return;
+
+    const avg = temps.reduce((a,b)=>a+b,0)/temps.length;
+
+    const group = document.getElementById(id);
+    const shape = group.querySelector("rect,path");
+    const label = group.querySelector("text");
+
+    const box = group.getBBox();
+    label.setAttribute("x", box.x + box.width/2);
+    label.setAttribute("y", box.y + box.height/2);
+    label.textContent = avg.toFixed(1)+"°C";
+  });
+}
+
+document.getElementById("applyFilter").addEventListener("click", updateTemperatures);
+
+updateTemperatures();
+</script>
+
+</body>
+</html>
