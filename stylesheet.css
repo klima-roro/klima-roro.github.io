@@ -242,7 +242,7 @@ main > p img {
         margin-left: 10%;        
     }
  
-    main > div img {
+    body > div img {
         margin-left: -30px;
         opacity: 0.2;
     }
