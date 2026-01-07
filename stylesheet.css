@@ -27,7 +27,7 @@ h1 {
     color: white;
 }
 
-img {
+body > div img {
     width: 80px;
     height: auto;
     margin-left: 80px;
@@ -226,13 +226,27 @@ main > div:nth-of-type(2) {
     font-size: 15px;
 }
 
+main > p {
+    opacity: 0.5;
+}
+
+main > p a {
+    color: white;
+}
+
+main > p img {
+    width: 15px;
+    height: auto;
+    opacity: 0.8;
+}
+
 @media (max-width: 768px) {
     body {
         width: 80%;
         margin-left: 10%;        
     }
  
-    img {
+    main > div img {
         margin-left: -30px;
         opacity: 0.2;
     }
