@@ -29,12 +29,8 @@ h1 {
 
 body > div img {
     width: 80px;
-    height: auto;
+    height: 80px;
     margin-left: 80px;
-}
-
-img:nth-of-type(2) {
-    display: none;
 }
 
 main {
@@ -249,10 +245,6 @@ main > p img {
     main > div img {
         margin-left: -30px;
         opacity: 0.2;
-    }
-    
-    main > div:nth-of-type(1) {
-        margin-left: 13%;
     }
     
     #temperature:after {
