@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>KAT | Sch&uuml;lerzuweisung</title>
+    <meta name="author" content="&Eacute;mile Jeremias Ruff">        
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+
+    <link rel="icon" type="image/png" href="../favicon.ico">
+    <link rel="stylesheet" href="../stylesheet.css" type="text/css">
+    
+    <style>
+        #openNav {
+            top: 0;
+            right: 5%;
+        }
+        
+        #openLightbox {
+            width: 40px;
+            height: auto;
+            position: absolute;
+            top: -10px;
+            right: 9%;
+            z-index: 1;
+            cursor: pointer;
+            padding-top: 10px;
+        }
+
+        main {
+            width: 90%;
+            margin: 5% 0 5% 10%; 
+            position: relative;
+            z-index: 0;
+        }
+
+        #file {
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+
+        #file:hover {
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        #file::file-selector-button  {
+            background-color: transparent;
+            color: white;
+            font-size: 18px;
+            border: 1px solid white;
+            padding: 8px 20px;
+            margin-right: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:not(#mobile button) {
+            border: none;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            color: white;
+            font-size: 18px;
+            padding: 10px 25px;
+            position: absolute;
+        }
+
+        button:not(#mobile button):hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        #run {
+            right: 385px;
+        }
+
+        #upload {
+            right: 230px;
+        }
+
+        #download {
+            right: 50px;
+        }
+
+        #stats {
+            margin-top: 50px;
+        }
+
+        #stats table td {
+            padding: 5px 30px 0 0;
+        }
+
+        #out {
+            margin-top: 80px;
+            width: 90%;
+        }
+
+        #out table {
+            border-collapse: collapse;
+            z-index: 0;
+            width: 100%;
+        }
+
+        #out table tr:nth-of-type(1) {
+            position: sticky;
+            top: 0;
+            background-color: #15202a;
+        }
+
+        #out table tr > :nth-child(1) {
+            width: 118px;
+        }
+
+        #out table tr > :nth-child(2) {
+            width: 226px;
+        }
+
+        #out table tr > :nth-child(3) {
+            width: 160px;
+        }
+
+        #out table tr > :nth-child(4) {
+            width: 178px;
+        }
+
+        #out table tr > :nth-child(5) {
+            width: 164px;
+        }
+
+        #out table tr > :nth-child(6) {
+            width: 286px;
+        }
+
+        #out table tr:not(table tr:nth-of-type(1)):hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        #out table tr td {
+            padding: 7px 10px;
+            border: 1px solid white;
+        }
+
+        #lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2;
+            overflow-y: auto;
+        }
+
+        #lightbox img:nth-of-type(1), #lightbox img:nth-of-type(3) {
+            margin: 8% 20% 4% 20%;
+            width: 60%;
+            height: auto;
+        }
+
+        #lightbox img:nth-of-type(2) {
+            margin: 0 47.5% 0 47.5%;
+            width: 70px;
+            height: auto;
+        }
+        
+        @media (max-width: 768px) {        
+            body {
+                height: auto;
+            }
+            
+            #openLightbox {
+                top: 50px;
+                right: 7%;
+            }
+            
+            #file {
+                margin-top: 50px;
+            }
+            
+            #run, #upload, #download {
+                position: static;
+                left: 0;
+                margin-top: 120px;
+                width: 90%;
+                height: 50px;
+            }
+            
+            #upload {
+                margin-top: 180px;
+            }
+            
+            #download {
+                margin-top: 240px;
+            }
+           
+            #mobile h1 {
+                margin-left: 10%;
+                margin-top: 30%;
+            }
+            
+            #mobile p {
+                margin-left: 10%;
+                margin-top: 10%;
+                line-height: 1.8rem;
+                width: 80%;
+            }
+            
+            #mobile button {
+                margin-left: 10%;
+                margin-top: 10px;
+                line-height: 1rem;
+                width: 80%;
+                height: auto;
+                background-color: rgba(255, 255, 255, 0.1);
+                border: none;
+                border-radius: 15px;
+                outline: none;
+                padding: 20px 15px;
+                color: white;
+                transition: background-color 0.5s ease-out;
+            }
+            
+            #mobile button:hover {
+                background-color: rgba(255, 255, 255, 0.05);
+                opacity: 0.8;
+            }
+            
+            #mobile button img {
+                height: 100%;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <img id="openNav" src="../b/menue2.png" alt="Buergermenue">
+    <nav>
+        <ul>
+            <li data-href="../index.html">Startseite</li>
+            <li data-href="meine-klasse.html">Meine Klasse</li>
+            <li data-href="mein-projekt.html">Mein Projekt</li>
+            <li data-href="sus.html" class="navEdit">Sch&uuml;ler&uuml;bersicht</li>
+            <li data-href="projekte.html" class="navEdit">Projekte&uuml;bersicht</li>
+            <li data-href="zuweisung.html" class="navEdit" style="background-color: rgba(28, 80, 67, 0.8);">Zuweisung</li>
+        </ul>
+        <ul>
+            <li data-href="impressum.html">Impressum & Kontakt</li>
+            <li data-href="datenschutz.html">Datenschutz</li>
+        </ul>
+    </nav>
+    
+    <img id="openLightbox" src="../b/hilfe.png" title="Hilfe">
+
+    <main>
+        <h1>Sch&uuml;lerzuweisung</h1>
+
+        <input type="file" id="file" accept=".xlsx,.xls">
+        <button id="run" onclick="run()">Zuweisung starten</button>
+        <button id="upload">Hochladen</button>
+        <button id="download">Herunterladen</button>
+
+        <div id="stats"></div>
+        <div id="out"></div>
+    </main>
+
+    <div id="lightbox">
+        <img src="../b/zuweisung-1.png" alt="Anleitung">
+        <img src="../b/arrow.png" alt="Pfeil nach unten">
+        <img src="../b/zuweisung-2.png" alt="Anleitung">
+    </div>
+    
+    <div id="mobile">
+        <h1>Sch&uuml;lerzuweisung</h1>
+        
+        <p>Für die Schülerzuweisung per Upload der Umfrageergebnisse wird empfohlen, am Desktop (PC) zu arbeiten, 
+        da das Layout und die Funktionen dieser Seite für einen großen Bildschirm ausgelegt sind und am Smartphone 
+        womöglich nicht funktionieren. Falls Sie die Seite dennoch per Smartphone nutzen möchten, drücken Sie folgend:</p>
+        <button id="goYourWay">Desktop simulieren<br><br>(nicht empfohlen)</button>
+    </div>
+
+<script src="../script.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script>
+const client = supabase.createClient(
+    "https://euuptkidjsquvhohvicv.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1dXB0a2lkanNxdXZob2h2aWN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwMDk4OTksImV4cCI6MjA3MDU4NTg5OX0.O1isV0Ove_Tb1ruXqY_dlD4UdQGM174eVw9Kp_22YO4"
+);
+
+async function loginCheck() {
+    const { data: { user } } = await client.auth.getUser();
+    const navStart = document.querySelector('li[data-href="../index.html"]');
+    
+    if (!user) {
+        navStart.innerHTML = "Startseite (Login)";
+        if (confirm("Zur Nutzung dieser Seite müssen Sie sich zunächst einloggen. Wollen Sie zum Login weitergeleitet werden?")) {
+            window.location.href = "../index.html";
+        } else { return }
+    } else { 
+        navStart.innerHTML = "Startseite (Logout)";
+    }
+    
+    const { data, error } = await client
+        .from("profile")
+        .select("orga")
+        .eq("uid", user.id)
+        .single();
+
+    if (error) {
+        console.error(error);
+        alert(error.message);
+        return;
+    }
+
+    else {
+        if (!data.orga) {
+            alert("Sie verfügen nicht über die nötigen Zugriffsrechte zur Nutzung dieser Seite.");
+            window.location.href = "../index.html";
+        }
+    }
+}
+loginCheck();
+
+async function checkOrga() {
+    const navEdit = document.querySelectorAll(".navEdit");
+    const { data: { user } } = await client.auth.getUser();
+
+    const { data, error } = await client
+        .from("profile")
+        .select("orga")
+        .eq("uid", user.id)
+        .single();
+
+    if (error) {
+        console.error(error);
+        alert(error.message);
+        return;
+    }
+
+    if (data.orga) {
+        navEdit.forEach(li => {
+            li.style.display = "block";
+        });
+
+    } else {
+        navEdit.forEach(li => {
+            li.style.display = "none";
+        });
+    }
+}
+checkOrga();
+
+const lightbox = document.getElementById("lightbox");
+document.getElementById("openLightbox").onclick = () => {
+    if (getComputedStyle(lightbox).display === "none") {
+        lightbox.style.display = "block";
+    }
+}
+
+lightbox.onclick = (e) => {
+    if (e.target === lightbox) {
+        lightbox.style.display = "none";
+    }
+}
+
+if (window.matchMedia("(max-width: 768px)").matches) {
+    document.querySelector("main").style.display = "none";
+    document.getElementById("openLightbox").style.display = "none";
+    document.getElementById("mobile").style.display = "block";
+}
+
+document.getElementById("goYourWay").onclick = () => {
+    document.querySelector("main").style.display = "block";
+    document.getElementById("openLightbox").style.display = "block";
+    document.getElementById("mobile").style.display = "none";
+}
+</script>
+
+<script>
+let wb;
+let outwb = null;
+let sch = [];
+
+function stufenfilter(schueler, projekt) {
+    const stufe = parseInt(String(schueler.Klasse).match(/^\d+/)?.[0], 10);
+
+    if (isNaN(stufe)) {
+        return false;
+    }
+
+    return (
+        projekt &&
+        stufe >= projekt.stufe_min &&
+        stufe <= projekt.stufe_max
+    );
+}
+
+document.getElementById("file").onchange = e => {
+    const r = new FileReader();
+
+    r.onload = ev => {
+        wb = XLSX.read(ev.target.result, { type: "binary" });
+    };
+    r.readAsBinaryString(e.target.files[0]);
+};
+
+async function run() {
+    if (!wb) {
+        alert("Datei wählen");
+        return;
+    }
+
+    sch = XLSX.utils.sheet_to_json(
+        wb.Sheets[wb.SheetNames[0]],
+        { defval: "" }
+    );
+
+    sch = sch.map(s => ({
+        Klasse: s.Klasse,
+        Name: s.Name,
+        Mail: s.Mail,
+        Erstwunsch: s.Erstwunsch,
+        Zweitwunsch: s.Zweitwunsch,
+        Drittwunsch: s.Drittwunsch
+    }));
+    
+const ungueltigeKlassen = sch.filter(s =>
+    isNaN(parseInt(String(s.Klasse).match(/^\d+/)?.[0], 10))
+);
+
+if (ungueltigeKlassen.length > 0) {
+    alert(
+        "Folgende Schüler haben keine gültige Klassenangabe:\n\n" +
+        ungueltigeKlassen
+            .map(s => `${s.Name}: ${s.Klasse || "leer"}`)
+            .join("\n")
+    );
+    return;
+}
+
+    sch.forEach(s => {
+        s["zugeordnetes Projekt"] = null;
+    });
+
+    // Projekte laden
+    const { data: projekte, error: projekteError } = await client
+        .from("kat_projekte")
+        .select("*")
+        .order("id");
+
+    if (projekteError) {
+        alert(projekteError.message);
+        return;
+    }
+
+    // Bereits zugeordnete Schüler laden
+    const { data: vorhandene, error: schuelerError } = await client
+        .from("kat_sus")
+        .select("mail, zugeordnet");
+
+    if (schuelerError) {
+        alert(schuelerError.message);
+        return;
+    }
+
+    const festeZuordnungen = new Set(
+        vorhandene
+            .filter(s => s.zugeordnet != null && s.zugeordnet !== "-")
+            .map(s => s.mail)
+    );
+    sch = sch.filter(s => !festeZuordnungen.has(s.Mail));
+
+    // belegte Plätze berechnen
+    const belegt = {};
+
+    vorhandene.forEach(s => {
+        if (s.zugeordnet != null) {
+            belegt[Number(s.zugeordnet)] = (belegt[Number(s.zugeordnet)] || 0) + 1;
+        }
+    });
+
+    // freie Plätze berechnen
+    const cap = {};
+
+    projekte.forEach(p => {
+        const frei = (p.plaetze || 0) - (belegt[p.id] || 0);
+        cap[p.id] = Math.max(0, frei);
+    });
+
+// Erste Vergabe
+for (const s of sch) {
+
+    for (const w of [s.Erstwunsch, s.Zweitwunsch, s.Drittwunsch]) {
+
+        const projekt = projekte.find(p => p.id == w);
+
+        if (
+            stufenfilter(s, projekt) &&
+            cap[w] > 0
+        ) {
+            s["zugeordnetes Projekt"] = w;
+            cap[w]--;
+            break;
+        }
+    }
+}
+
+    // Nachvergabe
+    let changed = true;
+    while (changed) {
+        changed = false;
+        for (const s of sch) {
+
+            if (s["zugeordnetes Projekt"] !== null) {
+                continue;
+            }
+
+            const wishes = [s.Erstwunsch, s.Zweitwunsch, s.Drittwunsch];
+            for (const target of wishes) {
+
+const zielProjekt = projekte.find(p => p.id == target);
+
+if (!stufenfilter(s, zielProjekt)) {
+    continue;
+}
+                let moved = false;
+                for (const o of sch) {
+
+                    if (o["zugeordnetes Projekt"] !== target) {
+                        continue;
+                    }
+
+for (const alt of [o.Zweitwunsch, o.Drittwunsch]) {
+
+    const altProjekt = projekte.find(p => p.id == alt);
+
+    if (
+        stufenfilter(o, altProjekt) &&
+        cap[alt] > 0
+    ) {
+                            o["zugeordnetes Projekt"] = alt;
+                            cap[alt]--;
+                            cap[target]++;
+
+                            s["zugeordnetes Projekt"] = target;
+                            cap[target]--;
+
+                            changed = true;
+                            moved = true;
+                            break;
+                        }
+                    }
+
+                    if (moved) {
+                        break;
+                    }
+                }
+
+                if (s["zugeordnetes Projekt"] !== null) {
+                    break;
+                }
+
+                if (cap[target] > 0) {
+                    s["zugeordnetes Projekt"] = target;
+                    cap[target]--;
+                    changed = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    // Restplatzvergabe
+    for (const s of sch) {
+        if (s["zugeordnetes Projekt"] !== null) {
+            continue;
+        }
+
+const freiesProjekt = Object.keys(cap)
+    .find(id => {
+        const projekt = projekte.find(p => p.id == id);
+        return cap[id] > 0 && stufenfilter(s, projekt);
+    });
+    
+        if (freiesProjekt) {
+            s["zugeordnetes Projekt"] = Number(freiesProjekt);
+            cap[freiesProjekt]--;
+        }
+    }
+
+    // Statistik
+    let e = 0,
+        z = 0,
+        d = 0,
+        w = 0,
+        n = 0;
+
+    let h = `<table><tr>`;
+
+    Object.keys(sch[0]).forEach(k => h += `<th>${k}</th>`);
+    h += "</tr>";
+
+    sch.forEach(s => {
+        if (s["zugeordnetes Projekt"] === s.Erstwunsch) e++;
+        else if (s["zugeordnetes Projekt"] === s.Zweitwunsch) z++;
+        else if (s["zugeordnetes Projekt"] === s.Drittwunsch) d++;
+        else if (s["zugeordnetes Projekt"] != null) w++;
+        else n++;
+
+        h += "<tr>";
+        Object.values(s).forEach(v => h += `<td>${v ?? ""}</td>`);
+        h += "</tr>";
+    });
+
+    h += "</tbody></table>";
+
+    document.getElementById("out").innerHTML = h;
+    document.getElementById("stats").innerHTML =
+
+        `<table>    
+            <tr><td>Erstwunsch: </td>
+                <td>${e} Personen</td></tr>
+
+            <tr><td>Zweitwunsch: </td>
+                <td>${z} Personen<td></tr>
+
+            <tr><td>Drittwunsch: </td>
+                <td>${d} Personen</td></tr>
+
+            <tr><td>Keine Wunschvergabe: </td>
+                <td>${w} Personen</td></tr>
+
+            <tr><td>Keine Zuordnung: </td>
+                <td>${n} Personen</td></tr>
+        </table>`;
+
+    outwb = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        outwb,
+        XLSX.utils.json_to_sheet(sch),
+        "Ergebnis"
+    );
+}
+
+document.getElementById("download").onclick = () => {
+    if (!outwb) {
+        alert("Bitte zuerst eine Zuordnung berechnen.");
+        return;
+    }
+
+    const heute = new Date();
+    const datum =
+        String(heute.getFullYear()).slice(-2) + "-" +
+        String(heute.getMonth() + 1).padStart(2, "0") + "-" +
+        String(heute.getDate()).padStart(2, "0");
+
+    XLSX.writeFile(outwb, `kat_projektzuweisung_${datum}.xlsx`);
+};
+
+document.getElementById("upload").onclick = async () => {
+    const { data: { user } } = await client.auth.getUser();
+    const { data } = await client
+        .from("profile")
+        .select("edit")
+        .eq("uid", user.id)
+        .single();
+
+    if (!data.edit) {
+        alert("Sie haben keine Berechtigung zum Hochladen.");
+        return;
+    }
+
+    if (sch.length === 0) {
+        alert("Bitte zuerst eine Zuordnung berechnen.");
+        return;
+    }
+
+    if (!confirm("Sind Sie sich sicher, dass Sie das Ergebnis hochladen wollen? Bereits bestehende Zuweisungen werden nicht überschrieben.")) {
+        return;
+    }
+
+    const daten = sch.map(s => ({
+        klasse: s.Klasse,
+        mail: s.Mail,
+        name: s.Name,
+        zugeordnet: s["zugeordnetes Projekt"],
+        erstwunsch: s.Erstwunsch,
+        zweitwunsch: s.Zweitwunsch,
+        drittwunsch: s.Drittwunsch
+    }));
+
+    const { data: vorhanden, error: vorhandenError } = await client
+        .from("kat_sus")
+        .select("mail, zugeordnet");
+
+    if (vorhandenError) {
+        alert(vorhandenError.message);
+        return;
+    }
+
+    const neu = daten.filter(s =>
+        !vorhanden.some(v => v.mail === s.mail)
+    );
+    const update = daten.filter(s =>
+        vorhanden.some(v =>
+            v.mail === s.mail &&
+            (v.zugeordnet === "-" || v.zugeordnet == null)
+        )
+    );
+
+    if (neu.length > 0) {
+        const { error } = await client
+            .from("kat_sus")
+            .insert(neu);
+
+        if (error) {
+            alert(error.message);
+            return;
+        }
+    }
+
+    if (update.length > 0) {
+        const { error } = await client
+            .from("kat_sus")
+            .upsert(update, {
+                onConflict: "mail"
+            });
+
+        if (error) {
+            alert(error.message);
+            return;
+        }
+    }
+
+    const uebersprungen = daten.length - neu.length - update.length;
+    alert(
+        `${neu.length} neue Schüler hinzugefügt.\n` +
+        `${update.length} Schüler ohne bisherige Zuweisung aktualisiert.\n` +
+        `${uebersprungen} bereits zugewiesene Schüler übersprungen.`
+    );
+};
+
+</script>
+</body>
+
+</html>

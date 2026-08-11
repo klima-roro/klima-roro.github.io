@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>Klimaaktionstag RoRo</title>
+    <meta name="author" content="&Eacute;mile Jeremias Ruff">        
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+
+    <link rel="icon" type="image/png" href="favicon.ico">
+    <link rel="stylesheet" href="../stylesheet.css" type="text/css">
+
+    <style>
+        :root {
+            --innerBgColor: #1c5043; /* #15202a #233546 */
+        }
+
+        #openNav {
+            top: 0;
+            right: 10%;
+        }
+
+        main > div {
+            margin-top: 50px;
+            display: flex;
+        }
+
+        #loginDiv {
+            width: 40%;
+            height: 170px;
+            background-color: var(--innerBgColor);
+            padding: 35px 30px 40px 30px;
+            position: relative;
+            z-index: 0;
+        }
+
+        #loginDiv input {
+            width: 98%;
+            background-color: var(--innerBgColor);
+            color: white;
+            border: none;
+            border-bottom: 1px solid white;
+            outline: none;
+        }
+
+        #loginDiv input:nth-of-type(1) {
+            margin-bottom: 30px;
+        }
+        
+        #loginDiv > div {
+            display: flex;
+        }
+
+        #showPW, #showNeuesPw {
+            display: inline;
+            height: 2rem;
+            width: auto;
+            opacity: 0.5;
+            margin-left: -50px;
+            margin-top: -10px;
+            cursor: pointer;
+        }
+
+        #showNeuesPw {
+            margin-bottom: -10px;
+            margin-top: auto;
+        }
+
+        #authStatus {
+            width: 46%;
+            position: absolute;
+            bottom: 30px;
+            left: 30px;
+        }
+
+        #loginDiv button {
+            width: 46%;
+            border: none;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 10px 25px;
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+        }
+
+        #loginDiv button:hover {
+            cursor: pointer;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        #loginDiv button.inactive {
+            color: grey;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        #nav2 {
+            margin-left: 10%;
+            width: 30%;
+            height: fit-content;
+            background-color: var(--innerBgColor);
+            border-radius: 15px;
+            display: none;
+        }
+
+        #nav2 ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #nav2 ul:nth-of-type(2) {
+            position: fixed;
+            bottom: 70px;
+        }
+
+        #nav2 ul li {
+            padding: 15px 30px 15px 20px;
+            border-radius: 10px;
+            transition: transform 0.1s ease-out;
+            cursor: pointer;
+        }
+
+        #nav2 ul li:hover {
+            transform: scale(1.03);
+        }
+
+        #nav2 ul li::before {
+            background: url("b/dreieck.png") center/contain no-repeat;
+            display: inline-block;
+            content: "";
+            width: 1rem;
+            height: 1rem;
+            margin-right: 5px;
+            margin-bottom: -2px;
+        }
+
+        #nav2 a {
+            color: white;
+            text-decoration: none;
+        }
+
+        #openPwReset {
+            text-decoration: underline;
+            margin-top: 50px;
+            cursor: pointer;
+            display: none;
+            color: white;
+            width: 15%;
+        }
+
+        #openPwReset img {
+            display: inline;
+            height: 1.3rem;
+            width: auto;
+            margin: 0 0 -6px 10px;
+        }
+
+        #lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100vw;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2;
+            overflow-y: auto;
+        }
+
+        #pwReset {
+            width: 30%;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            position: fixed;
+            top: 20%;
+            left: 35%;
+            color: black;
+        }
+
+        #pwReset h1 {
+            margin: 0;
+            text-align: center;
+        }
+
+        #pwReset p {
+            margin-top: 30px;
+            margin-bottom: 5px;
+            color: grey;
+        }
+
+        #pwReset input {
+            padding: 5px;
+            width: 95%;
+        }
+
+        #pwReset button {
+            margin-top: 30px;
+            padding: 8px 17px;
+            cursor: pointer;
+            background-color: #488aec;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        #pwReset button:hover {
+            background-color: #85b1f2;
+        }
+        
+        @media (max-width: 768px) {
+            main > div {
+                display: block;
+            }
+            
+            #loginDiv, #nav2 {
+                width: 82%;
+            }
+            
+            #loginDiv {
+                height: 200px;
+            }
+            
+            #loginDiv > div:nth-of-type(2) {
+                display: block;
+                height: 50px
+            }
+            
+            #authStatus {
+                width: 100%;
+                bottom: 65px;
+            }
+            
+            #loginDiv button {
+                left: 30px;
+                right: auto;
+            }
+            
+            #nav2 {
+                margin-left: 0;
+                margin-top: 30px;
+            }
+            
+            #openPwReset {
+                width: 50%;
+                margin-left: 10px;
+            }
+            
+            #pwReset {
+                width: 75%;
+                left: 20px;
+            }
+            
+            #pwReset h1 {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <img id="openNav" src="b/menue2.png" alt="Buergermenue">
+    <nav>
+        <ul>
+            <li data-href="t/meine-klasse.html">Meine Klasse</li>
+            <li data-href="t/mein-projekt.html">Mein Projekt</li>
+            <li data-href="t/sus.html" class="navEdit">Sch&uuml;ler&uuml;bersicht</li>
+            <li data-href="t/projekte.html" class="navEdit">Projekte&uuml;bersicht</li>
+            <li data-href="t/zuweisung.html" class="navEdit">Zuweisung</li>
+        </ul>
+        <ul>
+            <li data-href="t/impressum.html">Impressum & Kontakt</li>
+            <li data-href="t/datenschutz.html">Datenschutz</li>
+        </ul>
+    </nav>
+
+<main>
+    <h1>Klimaaktionstag RoRo</h1>
+
+    <div>
+        <div id="loginDiv">
+            <!--p>Login</p-->
+            <input placeholder="Benutzername" name="username" type="text" autofocus>
+            <div>
+                <input placeholder="Passwort" name="password" type="password">
+                <img id="showPW" src="b/view-dark.png" title="Passwort einblenden" alt="Symbolbild eines Auge">
+            </div>
+            <div>
+                <p id="authStatus"></p>
+                <button id="loginBtn" onclick="login()">Einloggen</button>
+                <button id="logoutBtn" onclick="logout()" style="display: none;">Ausloggen</button>
+            </div>
+        </div>
+
+        <div id="nav2">
+            <ul>
+                <li class="navEdit"><a href="t/projekte.html">zur Projekt&uuml;bersicht</a></li>
+                <li class="navEdit"><a href="t/sus.html">zur Sch&uuml;ler&uuml;bersicht</a></li>
+                <li class="navEdit"><a href="t/zuweisung.html">zur Sch&uuml;lerzuweisung</a></li>
+                <li><a href="t/meine-klasse.html">meine Klasse</a></li>
+                <li><a href="t/mein-projekt.html">mein Projekt</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <p id="openPwReset">Passwort ändern<img src="b/click.png" alt="Mouseklick"></p>
+
+    <div id="lightbox">
+        <div id="pwReset">
+            <h1>Passwort ändern</h1>
+            <p>aktuelles Kennwort:</p><input type="password" id="altesPW">
+            <p>neues Kennwort:</p><input type="password" id="neuesPW"><img id="showNeuesPw" src="b/view.png" title="Passwort einblenden">
+            <button id="submitNeuesPW">Speichern</button>
+        </div>
+    </div>
+</main>
+    
+<script src="script.js"></script>
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+const supabaseUrl = 'https://euuptkidjsquvhohvicv.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1dXB0a2lkanNxdXZob2h2aWN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwMDk4OTksImV4cCI6MjA3MDU4NTg5OX0.O1isV0Ove_Tb1ruXqY_dlD4UdQGM174eVw9Kp_22YO4';
+
+const client = createClient(supabaseUrl, supabaseKey, {
+    auth: { persistSession: true }
+});
+
+client.auth.onAuthStateChange((_event, session) => {
+    if (session) {
+        sessionStorage.setItem('sb-session', JSON.stringify(session));
+        localStorage.setItem('sb-session', JSON.stringify(session));
+    } else {
+        sessionStorage.removeItem('sb-session');
+        localStorage.removeItem('sb-session');
+    }
+});
+
+window.addEventListener('storage', (e) => {
+    if (e.key === 'sb-session' && !e.newValue) {
+        client.auth.signOut();
+    }
+});
+
+const savedSession = sessionStorage.getItem('sb-session');
+
+if (savedSession) {
+    try {
+        const parsed = JSON.parse(savedSession);
+        await client.auth.setSession(parsed);
+    } catch (err) {
+        console.error("Session konnte nicht geladen werden:", err);
+    }
+}
+
+async function checkOrga() {
+    const navEdit = document.querySelectorAll(".navEdit");
+    const { data: { user } } = await client.auth.getUser();
+
+    const { data, error } = await client
+        .from("profile")
+        .select("orga")
+        .eq("uid", user.id)
+        .single();
+
+    if (error) {
+        console.error(error);
+        alert(error.message);
+        return;
+    }
+
+    if (data.orga) {
+        navEdit.forEach(li => {
+            li.style.display = "block";
+        });
+
+    } else {
+        navEdit.forEach(li => {
+            li.style.display = "none";
+        });
+    }
+}
+
+const usernameInput = document.querySelector('[name="username"]');
+const passwordInput = document.querySelector('[name="password"]');
+const authStatus = document.getElementById("authStatus");
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const showPW = document.getElementById("showPW");
+const openPwReset = document.getElementById("openPwReset");
+const nav2 = document.getElementById("nav2");
+
+const { data: { user } } = await client.auth.getUser();
+
+if (user) {
+    authStatus.textContent = `Eingeloggt als: ${user.email.replace("@example.com", "")}`;
+    logoutBtn.style.display = "block";
+    loginBtn.style.display = "none";
+    openPwReset.style.display = "block";
+    nav2.style.display = "block";
+    checkOrga();
+} else {
+    authStatus.textContent = "Ausgeloggt";
+    logoutBtn.style.display = "none";
+    loginBtn.style.display = "block";
+    openPwReset.style.display = "none";
+    nav2.style.display = "none";
+}
+
+showPW.addEventListener("click", () => {
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        showPW.title = "Passwort ausblenden";
+        showPW.src = "b/hide-dark.png";
+    } else {
+        passwordInput.type = "password";
+        showPW.title = "Passwort einblenden";
+        showPW.src = "b/view-dark.png";
+    }
+});
+
+passwordInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        login();
+    }
+});
+
+window.login = async function () {
+    const username = document.querySelector('[name="username"]').value;
+    const password = document.querySelector('[name="password"]').value;
+
+    if (!username || !password) {
+        alert("Bitte Benutzername und Passwort eingeben.");
+        return;
+    }
+
+    const { data, error } = await client.auth.signInWithPassword({
+        email: username + "@example.com",
+        password: password
+    });
+
+    if (error) {
+        console.error(error);
+        if (error.message === "Invalid login credentials") {
+            alert("Benutzername oder Passwort falsch.");
+        } else {
+            alert("Login fehlgeschlagen: " + error.message);
+        }
+        return;
+    }
+
+    passwordInput.type = "password";
+    showPW.src = "b/view-dark.png";
+    openPwReset.style.display = "block";
+    nav2.style.display = "block";
+    checkOrga();
+
+    usernameInput.value = "";
+    passwordInput.value = "";
+    usernameInput.disabled = "true";
+    passwordInput.disabled = "true";
+
+    logoutBtn.style.display = "block";
+    loginBtn.style.display = "none";
+
+    const user = data.user.email.replace("@example.com", "");
+    authStatus.textContent = `Eingeloggt als: ${user}`;
+};
+
+window.logout = async function () {
+    const { error } = await client.auth.signOut();
+
+    if (error) {
+        console.error("Logout fehlgeschlagen:", error);
+        alert("Logout fehlgeschlagen: " + error.message);
+        return;
+    }
+
+    sessionStorage.removeItem('sb-session');
+    localStorage.removeItem('sb-session');
+
+    usernameInput.disabled = false;
+    passwordInput.disabled = false;
+
+    authStatus.textContent = "Ausgeloggt";
+    logoutBtn.style.display = "none";
+    loginBtn.style.display = "block";
+    openPwReset.style.display = "none";
+    nav2.style.display = "none";
+    checkOrga();
+};
+
+const lightbox = document.getElementById("lightbox");
+const pwReset = document.getElementById("pwReset");
+openPwReset.onclick = () => {
+    if (getComputedStyle(lightbox).display === "none") {
+        lightbox.style.display = "block";
+        pwReset.style.display = "block";
+    }
+}
+
+lightbox.onclick = (e) => {
+    if (e.target === lightbox) {
+        lightbox.style.display = "none";
+        pwReset.style.display = "none";
+    }
+}
+
+const altesPWInput = document.getElementById("altesPW");
+const neuesPWInput = document.getElementById("neuesPW");
+const submitNeuesPW = document.getElementById("submitNeuesPW");
+
+submitNeuesPW.addEventListener("click", async () => {
+    const altesPW = altesPWInput.value;
+    const neuesPW = neuesPWInput.value;
+
+    if (!altesPW || !neuesPW) {
+        alert("Bitte beide Passwortfelder ausfüllen.");
+        return;
+    }
+
+    const { data: { user }, error: userError } = await client.auth.getUser();
+    if (userError || !user) {
+        alert("Kein Benutzer eingeloggt.");
+        return;
+    }
+
+    // altes Passwort prüfen
+    const { error: loginError } = await client.auth.signInWithPassword({
+        email: user.email,
+        password: altesPW
+    });
+    if (loginError) {
+        alert("Das aktuelle Passwort ist falsch.");
+        return;
+    }
+
+    // neues Passwort setzen
+    const { error: updateError } = await client.auth.updateUser({
+        password: neuesPW
+    });
+    if (updateError) {
+        console.error(updateError);
+        alert("Passwort konnte nicht geändert werden: " + updateError.message);
+        return;
+    }
+    alert("Passwort erfolgreich geändert.");
+   
+    altesPWInput.value = "";
+    neuesPWInput.value = "";
+    lightbox.style.display = "none";
+    pwReset.style.display = "none";
+});
+
+const showNeuesPW = document.getElementById("showNeuesPw");
+showNeuesPW.addEventListener("click", () => {
+    if (neuesPWInput.type === "password") {
+        neuesPWInput.type = "text";
+        showNeuesPW.title = "Passwort ausblenden";
+        showNeuesPW.src = "b/hide.png";
+    } else {
+        neuesPWInput.type = "password";
+        showNeuesPW.title = "Passwort einblenden";
+        showNeuesPW.src = "b/view.png";
+    }
+});
+</script>
+</body>
+
+</html>
