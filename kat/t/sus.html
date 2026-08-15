@@ -1,4 +1,4 @@
-<!DOCTYPE html><!-- saveBtn: sus_zugeordnet: konvertierung zu Zahlen schlägt fehl -->
+<!DOCTYPE html>
 <html lang="de">
 <head>
     <title>KAT | Sch&uuml;ler</title>
@@ -38,7 +38,7 @@
             padding-top: 10px;
         }
 
-        main > div {
+        main > div:not(#filter) {
             position: absolute;
             display: flex;
             right: 18%;
@@ -47,7 +47,7 @@
             height: 60px;
         }
 
-        main > div button, main > button {
+        main > div button:not(#filter button), main > button {
             background-color: transparent;
             border: none;
             outline: none;
@@ -56,7 +56,7 @@
             cursor: pointer;
         }
 
-        main > button:hover {
+        main > button:not(#filter button):hover {
             background-color: rgba(255, 255, 255, 0.1);
         }
 
@@ -107,6 +107,80 @@
             padding: 10px;
         }
 
+        #filter {
+            display: flex;
+            margin-top: 80px;
+        }
+
+        #filter p {
+            padding: 7px;
+            margin: 0;
+        }
+
+        .select {
+            position: relative;
+        }
+
+        .selected {
+            border: 1px solid white;
+            color: white;
+            text-align: left;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding-left: 15px;
+            width: 150px;
+            height: 35px;
+        }
+
+        .options {
+            display: none;
+            position: absolute;
+            background-color: #15202a;
+            z-index: 3;
+            width: 150px;
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+        }
+
+        .options div {
+            cursor: pointer;
+            padding: 10px 15px;
+        }
+
+        .options div:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+                
+        .select.open .options {
+            display: block;
+        }
+
+        #optionsLightbox {
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            display: none;
+            z-index: 2;
+            top: 0;
+            left: 0;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        #filter p:nth-of-type(2) {
+            margin: 0 10px 0 10px;
+        }
+
+        #filter input {
+            background-color: transparent;
+            color: white;
+            border: 1px solid white;
+            border-radius: 7px;
+            outline: none;
+            height: 30px;
+            margin-left: px;
+            padding-left: 10px;
+        }
+
         table {
             border-collapse: collapse;
             z-index: 0;
@@ -114,7 +188,7 @@
         }
 
         #sus {
-            margin-top: 100px;
+            margin-top: 50px;
         }
 
         table thead {
@@ -149,7 +223,7 @@
         }
 
         table tr:not(thead tr):hover {
-            background-color: rgba(255, 255, 255, 0.1); /* #1c5043 */
+            background-color: rgb(28, 80, 67); /* #1c5043 */
         }
 
         table tr td {
@@ -347,10 +421,29 @@
 
         <select id="downDrop" style="display: none;">
             <option>Format wählen</option>
-            <!--option value="pdf">PDF</option-->
+            <option value="pdf">PDF</option>
             <option value="ods">ODS</option>
             <option value="excel">Excel</option>
         </select>
+
+        <div id="filter">
+            <p>Filtern nach:</p>
+            <div class="select">
+                <button class="selected">-</button>
+
+                <div class="options">
+                    <div data-value="id">id</div>
+                    <div data-value="klasse">Klasse</div>
+                    <div data-value="name">Namen</div>
+                    <div data-value="mail">E-Mail</div>
+                    <div data-value="zugeordnet">Projekt</div>
+                </div>
+
+                <div id="optionsLightbox"></div>
+            </div>
+            <p>=</p>
+            <input type="text" name="filter">
+        </div>
 
         <table id="sus">
             <thead>
@@ -483,6 +576,45 @@ if (window.matchMedia("(max-width: 768px)").matches) {
 document.getElementById("goYourWay").onclick = () => {
     document.querySelector("main").style.display = "block";
     document.getElementById("mobile").style.display = "none";
+}
+
+const select = document.querySelector(".select");
+const selected = select.querySelector(".selected");
+let filterFeld = null;
+
+selected.onclick = () => {
+    select.classList.toggle("open");
+    optionsLightbox.style.display = "block";
+};
+
+select.querySelectorAll(".options div").forEach(option => {
+    option.onclick = () => {
+        filterFeld = option.dataset.value;
+
+        selected.textContent = option.textContent;
+        select.classList.remove("open");
+        optionsLightbox.style.display = "none";
+
+        filterTabelle();
+    };
+});
+
+const filterInput = document.querySelector('#filter input');
+filterInput.addEventListener("input", filterTabelle);
+
+function filterTabelle() {
+    const suchtext = filterInput.value.toLowerCase();
+
+    document.querySelectorAll("#sus tbody tr").forEach(row => {
+        if (!filterFeld || !suchtext) {
+            row.style.display = "";
+            return;
+        }
+
+        const zelle = row.querySelector(`[data-field="${filterFeld}"]`);
+        const wert = zelle?.textContent.toLowerCase() ?? "";
+        row.style.display = wert.includes(suchtext) ? "" : "none";
+    });
 }
 
 let modus = "view";
@@ -800,6 +932,7 @@ async function ladeSchueler(sortierung = "id") {
             }, 3000);
         });
     });
+    filterTabelle();
 }
 ladeProjekte();
 ladeSchueler();
@@ -857,6 +990,23 @@ function kuerze(text, max) {
         : text;
 }
 
+function getSichtbareSchueler() {
+    const rows = document.querySelectorAll("#sus tbody tr");
+    return [...rows]
+        .filter(row => row.style.display !== "none")
+        .map(row => {
+            const get = field =>
+                row.querySelector(`[data-field="${field}"]`)?.textContent.trim() ?? "";
+
+            return {
+                klasse: get("klasse"),
+                name: get("name"),
+                mail: get("mail"),
+                zugeordnet: get("zugeordnet")
+            };
+        });
+}
+
 async function downloadAsPdf() {
     await ladeSchueler();
     try{
@@ -865,30 +1015,7 @@ async function downloadAsPdf() {
 
         const { generate } = await import("https://esm.sh/@pdfme/generator");
         const { table, text } = await import("https://esm.sh/@pdfme/schemas");
-
-        // Schueler laden
-        const {
-            data,
-            error
-        } = await client
-
-            .from("kat_sus")
-            .select(`
-                id,
-                klasse,
-                name,
-                mail,
-                zugeordnet,
-                erstwunsch,
-                zweitwunsch,
-                drittwunsch
-            `)
-            .order("id")
-            .order("name");
-
-        if(error){
-            throw error;
-        }        
+        const data = getSichtbareSchueler();      
 
         const {
             data: projekteData,
@@ -913,10 +1040,7 @@ async function downloadAsPdf() {
             kuerze(s.klasse, 10),
             kuerze(s.name, 20),
             kuerze(s.mail, 20),
-            kuerze(
-                `${s.zugeordnet ?? ""}${projekte[String(s.zugeordnet)] ? " - " + projekte[String(s.zugeordnet)] : ""}`,
-                20
-            )
+            kuerze(s.zugeordnet, 20)
         ]);
 
         console.log("Anzahl Schueler:", tableRows.length);
@@ -986,6 +1110,22 @@ async function downloadAsPdf() {
     }
 }
 
+function getSichtbareDaten() {
+    const rows = [...document.querySelectorAll("#sus tbody tr")]
+        .filter(row => row.style.display !== "none");
+
+    return rows.map(row => [
+        row.querySelector('[data-field="id"]')?.textContent.trim() ?? "",
+        row.querySelector('[data-field="klasse"]')?.textContent.trim() ?? "",
+        row.querySelector('[data-field="name"]')?.textContent.trim() ?? "",
+        row.querySelector('[data-field="mail"]')?.textContent.trim() ?? "",
+        row.querySelector('[data-field="zugeordnet"]')?.textContent.trim() ?? "",
+        row.querySelector('[data-field="erstwunsch"]')?.textContent.trim() ?? "",
+        row.querySelector('[data-field="zweitwunsch"]')?.textContent.trim() ?? "",
+        row.querySelector('[data-field="drittwunsch"]')?.textContent.trim() ?? ""
+    ]);
+}
+
 let XLSX = null;
 async function getXLSX() {
     if (!XLSX) {
@@ -996,10 +1136,20 @@ async function getXLSX() {
 }
 
 async function downloadAsExcel() {
-    await ladeSchueler();
     const XLSX = await getXLSX();
-    const table = document.getElementById("sus");
-    const workbook = XLSX.utils.table_to_book(table, {sheet: "Schueler"});
+    const daten = [
+        ["id", "Klasse", "Name", "E-Mail", "Projekt", "Erstwunsch", "Zweitwunsch", "Drittwunsch"],
+        ...getSichtbareDaten()
+    ];
+    const worksheet = XLSX.utils.aoa_to_sheet(daten);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "Schueler"
+    );
+
     const datum = new Date()
         .toLocaleDateString("de-DE")
         .replaceAll(".", "-");
@@ -1011,10 +1161,20 @@ async function downloadAsExcel() {
 }
 
 async function downloadAsOds() {
-    await ladeSchueler();
     const XLSX = await getXLSX();
-    const table = document.getElementById("sus");
-    const workbook = XLSX.utils.table_to_book(table, {sheet: "Schueler"});
+    const daten = [
+        ["id", "Klasse", "Name", "E-Mail", "Projekt", "Erstwunsch", "Zweitwunsch", "Drittwunsch"],
+        ...getSichtbareDaten()
+    ];
+    const worksheet = XLSX.utils.aoa_to_sheet(daten);
+    const workbook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(
+        workbook,
+        worksheet,
+        "Schueler"
+    );
+
     const datum = new Date()
         .toLocaleDateString("de-DE")
         .replaceAll(".", "-");
