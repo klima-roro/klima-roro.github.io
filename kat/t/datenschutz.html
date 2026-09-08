@@ -35,6 +35,12 @@
             font-weight: bold;
         }
 
+        img {
+            height: 1rem;
+            width: auto;
+            margin-left: 5px;
+        }
+
         @media (max-width: 768px) {
             main {
                 width: 80%;
@@ -47,7 +53,10 @@
     <img id="openNav" src="../b/menue2.png" alt="Buergermenue">
     <nav>
         <ul>
-            <li data-href="../index.html">Startseite</li>
+            <div>
+                <li data-href="../index.html">Startseite</li>
+                <li><img src="../b/auth-2.png" alt="Authentifizierungssymbol"></li>
+            </div>
             <li data-href="meine-klasse.html">Meine Klasse</li>
             <li data-href="mein-projekt.html">Mein Projekt</li>
             <li data-href="sus.html" class="navEdit">Sch&uuml;ler&uuml;bersicht</li>
@@ -56,7 +65,7 @@
         </ul>
         <ul>
             <li data-href="impressum.html">Impressum & Kontakt</li>
-            <li data-href="datenschutz.html" style="background-color: rgba(28, 80, 67, 0.8);">Datenschutz</li>
+            <li data-href="datenschutz.html" class="hier">Datenschutz</li>
         </ul>
     </nav>
 
@@ -71,12 +80,12 @@
                 <li>88 Colin P Kelly Jr St</li>
                 <li>San Francisco, CA 94107</li>
                 <li>United States</li></ul></p>
-        <p>Weitere Informationen zu Widerspruchs- und Beseitigungsmöglichkeiten gegenüber GitHub finden Sie unter: <a title="Externer Link" href="https://docs.github.com/en/free-pro-team@latest/github/site-policy/github-privacy-statement#github-pages">https://docs.github.com/en/free-pro-team@latest/github/site-policy/github-privacy-statement#github-pages</a>.</p>
+        <p>Weitere Informationen zu Widerspruchs- und Beseitigungsmöglichkeiten gegenüber GitHub finden Sie unter: <a title="Externer Link" href="https://docs.github.com/en/free-pro-team@latest/github/site-policy/github-privacy-statement#github-pages">https://docs.github.com/en/free-pro-team@latest/github/site-policy/github-privacy-statement#github-pages <img></a>.</p>
         <p>Sie haben das Recht der Verarbeitung zu widersprechen. Ob der Widerspruch erfolgreich ist, ist im Rahmen einer Interessenabwägung zu ermitteln. Die Daten werden gelöscht, sobald der Zweck der Verarbeitung entfällt.</p>
         <p>GitHub hat Compliance-Maßnahmen für internationale Datenübermittlungen umgesetzt. Diese gelten für alle weltweiten Aktivitäten, bei denen GitHub personenbezogene Daten von natürlichen Personen in der EU verarbeitet. Diese Maßnahmen basieren auf den EU-Standardvertragsklauseln (SCCs). Weitere Informationen finden Sie unter: <a title="Externer Link" 
-        href="https://docs.github.com/en/free-pro-team@latest/github/site-policy/github-data-protection-addendum#attachment-1–the-standard-contractual-clauses-processors">https://docs.github.com/en/free-pro-team@latest/github/site-policy/github-data-protection-addendum#attachment-1–the-standard-contractual-clauses-processors</a>.</p>
+        href="https://docs.github.com/en/free-pro-team@latest/github/site-policy/github-data-protection-addendum#attachment-1–the-standard-contractual-clauses-processors">https://docs.github.com/en/free-pro-team@latest/github/site-policy/github-data-protection-addendum#attachment-1–the-standard-contractual-clauses-processors <img></a>.</p>
 
-        <p style="text-align: right; font-style: italic;">Mustererklärung von <a title="Externer Link" href="https://opr.vc/docs/hosting/github_pages/">privacy.docs</a></p>
+        <p style="text-align: right; font-style: italic;">Mustererklärung von <a title="Externer Link" href="https://opr.vc/docs/hosting/github_pages/">privacy.docs <img></a></p>
 
         <p style="margin-top: 150px;"><span>- Supabase -</span><br><br>
         Für bestimmte Funktionen unserer Website verwenden wir den Dienst Supabase. Anbieter ist die 
@@ -86,7 +95,7 @@
            <li>Singapore, 318992</li></ul></p>
         <p>Supabase stellt die technische Infrastruktur für Authentifizierung und Datenspeicherung bereit. Dabei werden die Daten verarbeitet, die Sie selbst eingeben sowie technisch erforderliche Protokolldaten (zB. IP-Adresse, Zeitpunkt des Zugriffs, Browser-Informationen).</p>
         <p>Die Verarbeitung erfolgt, um die Funktionen der Website bereitzustellen und deren Sicherheit zu gewährleisten (Art. 6 Abs. 1 lit. f DSGVO). Wir haben Zugriff auf Logdaten.</p>
-        <p>Supabase speichert und verarbeitet Daten innerhalb der jeweils gewählten Region. Eine Übermittlung in Drittländer kann jedoch nicht ausgeschlossen werden. Weitere Informationen finden Sie unter: <a title="Externer Link" href="https://supabase.com/legal/dpa">https://supabase.com/legal/dpa</a>.</p>
+        <p>Supabase speichert und verarbeitet Daten innerhalb der jeweils gewählten Region. Eine Übermittlung in Drittländer kann jedoch nicht ausgeschlossen werden. Weitere Informationen finden Sie unter: <a title="Externer Link" href="https://supabase.com/legal/dpa">https://supabase.com/legal/dpa <img></a>.</p>
         <p>Die gespeicherten Daten werden gelöscht, sobald sie für den genannten Zweck nicht mehr erforderlich sind. Sie haben das Recht, Auskunft über die zu Ihrer Person gespeicherten Daten zu verlangen, unrichtige Daten berichtigen zu lassen oder die Löschung Ihrer Daten zu beantragen.</p>
     </main>
 
@@ -101,44 +110,31 @@ const client = supabase.createClient(
 
 async function loginCheck() {
     const { data: { user } } = await client.auth.getUser();
-    const navStart = document.querySelector('li[data-href="../index.html"]');
-
+    const navButton = document.querySelector("nav div li:nth-of-type(2)");
+    
     if (!user) {
-        navStart.innerHTML = "Startseite (Login)";
-    } else {
-        navStart.innerHTML = "Startseite (Logout)";
+        navButton.title = "zum Login";
+        navButton.onclick = () => {
+            window.location.href = "../index.html";
+        }
+    } else { 
+        navButton.title = "Logout";
+        navButton.onclick = () => {
+            window.location.href = "../index.html?do=logout";
+        }
     }
 }
 loginCheck();
-
-async function checkOrga() {
-    const navEdit = document.querySelectorAll(".navEdit");
-    const { data: { user } } = await client.auth.getUser();
-
-    const { data, error } = await client
-        .from("profile")
-        .select("orga")
-        .eq("uid", user.id)
-        .single();
-
-    if (error) {
-        console.error(error);
-        alert(error.message);
-        return;
-    }
-
-    if (data.orga) {
-        navEdit.forEach(li => {
-            li.style.display = "block";
-        });
-
-    } else {
-        navEdit.forEach(li => {
-            li.style.display = "none";
-        });
-    }
-}
 checkOrga();
+
+document.querySelectorAll("main a").forEach(a => {
+    a.title = "Externer Link";
+    a.target = "_blank";
+});
+
+document.querySelectorAll("a img").forEach(img => {
+    img.src = "../b/extern.png";
+});
 </script>
 </body>
 

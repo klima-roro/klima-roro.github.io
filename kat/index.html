@@ -491,6 +491,12 @@ window.logout = async function () {
     checkOrga();
 };
 
+// Logout
+const tun = new URLSearchParams(window.location.search).get('do');   
+if (tun === "logout") {
+    window.logout();
+}
+
 const lightbox = document.getElementById("lightbox");
 const pwReset = document.getElementById("pwReset");
 openPwReset.onclick = () => {

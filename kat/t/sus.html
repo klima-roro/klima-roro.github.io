@@ -29,13 +29,8 @@
         }
         
         #openLightbox {
-            width: 40px;
-            height: auto;
-            position: absolute;
             top: 0px;
             right: -32px;
-            cursor: pointer;
-            padding-top: 10px;
         }
 
         main > div:not(#filter) {
@@ -184,7 +179,7 @@
         table {
             border-collapse: collapse;
             z-index: 0;
-            width: 150%;
+            table-layout: fixed;
         }
 
         #sus {
@@ -228,7 +223,7 @@
 
         table tr td {
             padding: 7px 10px;
-            border: 1px solid white;
+            border: 1px solid grey;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -265,16 +260,15 @@
         }
 
         table tr > :nth-child(3) {
-            width: 130px;
+            width: 200px;
         }
 
         table tr > :nth-child(4) {
-            width: 200px;
-            cursor: pointer;
+            width: 300px;
         }
 
         table tr > :nth-child(5) {
-            width: 250px;
+            width: 350px;
         }
 
         #sus input {
@@ -292,100 +286,9 @@
             width: 100%;
         }
 
-        #lightbox {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 100vw;
-            background-color: rgba(0, 0, 0, 0.8);
-            z-index: 2;
-            overflow-y: auto;
-        }
-
-        #lightbox img:nth-of-type(1), #lightbox img:nth-of-type(3) {
-            margin: 8% 20% 4% 20%;
-            width: 60%;
-            height: auto;
-        }
-
-        #lightbox img:nth-of-type(2) {
-            margin: 0 47.5% 0 47.5%;
-            width: 70px;
-            height: auto;
-        }
-
-        #loader {
-            display: none;
-            position: fixed;
-            left: 50%;
-            top: 50%;
-            width: 80px;
-            height: 80px;
-            margin-left: -40px;
-            margin-top: -40px;
-            z-index: 10;
-            animation: drehen 1s linear infinite;
-        }
-
-        @keyframes drehen {
-            from {
-                transform: rotate(0deg);
-            } to { 
-                transform: rotate(360deg);
-            }
-        }
-        
-        #mobile {
-            display: none;
-        }
-        
         @media (max-width: 768px) {        
             body {
                 height: auto;
-            }
-           
-            #mobile h1 {
-                margin-left: 10%;
-                margin-top: 30%;
-            }
-            
-            #mobile > div {
-                display: flex;
-                width: 90%;
-                gap: 30px;
-                margin-left: 5%;
-            }
-            
-            #mobile > div:nth-of-type(1) {
-                margin-top: 10%;
-            }
-            
-            #mobile > div:nth-of-type(2) {
-                margin-top: 50px;
-            }
-            
-            #mobile button {
-                width: 45%;
-                height: auto;
-                background-color: rgba(255, 255, 255, 0.1);
-                border: none;
-                border-radius: 15px;
-                outline: none;
-                padding: 20px 15px;
-                color: white;
-                transition: background-color 0.5s ease-out;
-            }
-            
-            #mobile button:hover {
-                background-color: rgba(255, 255, 255, 0.05);
-                opacity: 0.8;
-            }
-            
-            #mobile button img {
-                height: 100%;
-                width: 100%;
             }
         }
     </style>
@@ -394,10 +297,13 @@
     <img id="openNav" src="../b/menue2.png" alt="Buergermenue">
     <nav>
         <ul>
-            <li data-href="../index.html">Startseite</li>
+            <div>
+                <li data-href="../index.html">Startseite</li>
+                <li><img src="../b/auth-2.png" alt="Authentifizierungssymbol"></li>
+            </div>
             <li data-href="meine-klasse.html">Meine Klasse</li>
             <li data-href="mein-projekt.html">Mein Projekt</li>
-            <li data-href="sus.html" class="navEdit" style="background-color: rgba(28, 80, 67, 0.8);">Sch&uuml;ler&uuml;bersicht</li>
+            <li data-href="sus.html" class="navEdit hier">Sch&uuml;ler&uuml;bersicht</li>
             <li data-href="projekte.html" class="navEdit">Projekte&uuml;bersicht</li>
             <li data-href="zuweisung.html" class="navEdit">Zuweisung</li>
         </ul>
@@ -421,7 +327,7 @@
 
         <select id="downDrop" style="display: none;">
             <option>Format wählen</option>
-            <option value="pdf">PDF</option>
+            <option value="pdf">PDF</option><!-- fuer gefilternten Download -->
             <option value="ods">ODS</option>
             <option value="excel">Excel</option>
         </select>
@@ -452,9 +358,9 @@
                 <td>Name <img src="../b/arrow.png" data-sort="name" title="nach Namen sortieren"></td>
                 <td>E-Mail <img src="../b/arrow.png" data-sort="mail" title="nach E-Mail-Adresse sortieren"></td>
                 <td>Projekt <img src="../b/arrow.png" data-sort="zugeordnet" title="nach Projekt sortieren"></td>
-                <td>Erst. <img src="../b/arrow.png" data-sort="erstwunsch" title="nach Erstwunsch sortieren"></td>
-                <td>Zweit. <img src="../b/arrow.png" data-sort="zweitwunsch" title="nach Zweitwunsch sortieren"></td>
-                <td>Dritt. <img src="../b/arrow.png" data-sort="drittwunsch" title="nach Drittwunsch sortieren"></td>
+                <td title="Erstwunsch">Erst. <img src="../b/arrow.png" data-sort="erstwunsch" title="nach Erstwunsch sortieren"></td>
+                <td title="Zweitwunsch">Zweit. <img src="../b/arrow.png" data-sort="zweitwunsch" title="nach Zweitwunsch sortieren"></td>
+                <td title="Drittwunsch">Dritt. <img src="../b/arrow.png" data-sort="drittwunsch" title="nach Drittwunsch sortieren"></td>
             </tr>
             </thead>
 
@@ -466,7 +372,7 @@
 
     <div id="lightbox">
         <img src="../b/sus-1.png" alt="Anleitung">
-        <img src="../b/arrow.png" alt="Pfeil nach unten">
+        <img id="lightArrow" src="../b/arrow.png" alt="Pfeil nach unten">
         <img src="../b/sus-2.png" alt="Anleitung">
     </div>
     <img id="loader" src="../b/logo.png" alt="Logo des Klimarates">
@@ -494,15 +400,21 @@ const client = supabase.createClient(
 
 async function loginCheck() {
     const { data: { user } } = await client.auth.getUser();
-    const navStart = document.querySelector('li[data-href="../index.html"]');
+    const navButton = document.querySelector("nav div li:nth-of-type(2)");
     
     if (!user) {
-        navStart.innerHTML = "Startseite (Login)";
+        navButton.title = "zum Login";
+        navButton.onclick = () => {
+            window.location.href = "../index.html";
+        }
         if (confirm("Zur Nutzung dieser Seite müssen Sie sich zunächst einloggen. Wollen Sie zum Login weitergeleitet werden?")) {
             window.location.href = "../index.html";
         } else { return }
     } else { 
-        navStart.innerHTML = "Startseite (Logout)";
+        navButton.title = "Logout";
+        navButton.onclick = () => {
+            window.location.href = "../index.html?do=logout";
+        }
     }
 
     const { data, error } = await client
@@ -525,58 +437,7 @@ async function loginCheck() {
     }
 }
 loginCheck();
-
-async function checkOrga() {
-    const navEdit = document.querySelectorAll(".navEdit");
-    const { data: { user } } = await client.auth.getUser();
-
-    const { data, error } = await client
-        .from("profile")
-        .select("orga")
-        .eq("uid", user.id)
-        .single();
-
-    if (error) {
-        console.error(error);
-        alert(error.message);
-        return;
-    }
-
-    if (data.orga) {
-        navEdit.forEach(li => {
-            li.style.display = "block";
-        });
-
-    } else {
-        navEdit.forEach(li => {
-            li.style.display = "none";
-        });
-    }
-}
 checkOrga();
-
-const lightbox = document.getElementById("lightbox");
-document.getElementById("openLightbox").onclick = () => {
-    if (getComputedStyle(lightbox).display === "none") {
-        lightbox.style.display = "block";
-    }
-}
-
-lightbox.onclick = (e) => {
-    if (e.target === lightbox) {
-        lightbox.style.display = "none";
-    }
-}
-
-if (window.matchMedia("(max-width: 768px)").matches) {
-    document.querySelector("main").style.display = "none";
-    document.getElementById("mobile").style.display = "block";
-}
-
-document.getElementById("goYourWay").onclick = () => {
-    document.querySelector("main").style.display = "block";
-    document.getElementById("mobile").style.display = "none";
-}
 
 const select = document.querySelector(".select");
 const selected = select.querySelector(".selected");
@@ -1012,10 +873,15 @@ async function downloadAsPdf() {
     try{
         const loader = document.getElementById("loader");
         loader.style.display = "block";
+        const data = getSichtbareSchueler(); 
+
+        if (data.length > 66) {
+            alert(`Es wurden ${data.length} Schüler gefunden. Maximal 66 sind erlaubt.`);
+            return;
+        }   
 
         const { generate } = await import("https://esm.sh/@pdfme/generator");
         const { table, text } = await import("https://esm.sh/@pdfme/schemas");
-        const data = getSichtbareSchueler();      
 
         const {
             data: projekteData,

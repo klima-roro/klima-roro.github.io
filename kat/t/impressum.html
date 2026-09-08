@@ -42,6 +42,12 @@
             color: white;
         }
 
+        #links img {
+            height: 1rem;
+            width: auto;
+            margin-left: 5px;
+        }
+
         form {
             border-radius: 20px;
             width: 84%;
@@ -148,7 +154,10 @@
     <img id="openNav" src="../b/menue2.png" alt="Buergermenue">
     <nav>
         <ul>
-            <li data-href="../index.html">Startseite</li>
+            <div>
+                <li data-href="../index.html">Startseite</li>
+                <li><img src="../b/auth-2.png" alt="Authentifizierungssymbol"></li>
+            </div>
             <li data-href="meine-klasse.html">Meine Klasse</li>
             <li data-href="mein-projekt.html">Mein Projekt</li>
             <li data-href="sus.html" class="navEdit">Sch&uuml;ler&uuml;bersicht</li>
@@ -156,7 +165,7 @@
             <li data-href="zuweisung.html" class="navEdit">Zuweisung</li>
         </ul>
         <ul>
-            <li data-href="impressum.html" style="background-color: rgba(28, 80, 67, 0.8);">Impressum & Kontakt</li>
+            <li data-href="impressum.html" class="hier">Impressum & Kontakt</li>
             <li data-href="datenschutz.html">Datenschutz</li>
         </ul>
     </nav>
@@ -169,18 +178,19 @@
         <p>Viele auf dieser Seite verwendete Grafiken stammen aus Flaticon, einer Datenbank für u.a. Icons.
         Es wurden Bilder folgender Urheber verwendet:
         
-        <ul>
-            <li>Magnific / <a href="https://www.flaticon.com/free-icon/arrow-down-sign-to-navigate_32195">flaticon.com</a></li>
-            <li>SURAIYA MILI / <a href="https://www.flaticon.com/free-icon/question_9603852">flaticon.com</a></li>
-            <li>Arkinasi / <a href="https://www.flaticon.com/free-icon/edit-text_10573605">flaticon.com</a></li>
-            <li>Gregor Cresnar / <a href="https://www.flaticon.com/free-icon/eye_159604">flaticon.com</a></li>
-            <li>Yogi Aprelliyanto / <a href="https://www.flaticon.com/free-icon/diskette_2874050">flaticon.com</a></li>
-            <li>Hight Quality Icons / <a href="https://www.flaticon.com/free-icon/download_9258202">flaticon.com</a></li>
-            <li>nawicon / <a href="https://www.flaticon.com/free-icon/play_4211344">flaticon.com</a></li>
-            <li>Tempo_doloe / <a href="https://www.flaticon.com/free-icon/click_4620328">flaticon.com</a></li>
-            <li>Creative Stall Premium / <a href="https://www.flaticon.com/free-icon/pdf-file_2889358">flaticon.com</a></li>
-            <li>IconMarketPK / <a href="https://www.flaticon.com/free-icon/odf_5105577">flaticon.com</a></li>
-            <li>juicy_fish / <a href="https://www.flaticon.com/free-icon/file_14969617">flaticon.com</a></li>
+        <ul id="links">
+            <li>Magnific / <a href="https://www.flaticon.com/free-icon/arrow-down-sign-to-navigate_32195">flaticon.com</a><img></li>
+            <li>SURAIYA MILI / <a href="https://www.flaticon.com/free-icon/question_9603852">flaticon.com</a><img></li>
+            <li>Arkinasi / <a href="https://www.flaticon.com/free-icon/edit-text_10573605">flaticon.com</a><img></li>
+            <li>Gregor Cresnar / <a href="https://www.flaticon.com/free-icon/eye_159604">flaticon.com</a><img></li>
+            <li>Yogi Aprelliyanto / <a href="https://www.flaticon.com/free-icon/diskette_2874050">flaticon.com</a><img></li>
+            <li>Hight Quality Icons / <a href="https://www.flaticon.com/free-icon/download_9258202">flaticon.com</a><img></li>
+            <li>nawicon / <a href="https://www.flaticon.com/free-icon/play_4211344">flaticon.com</a><img></li>
+            <li>Tempo_doloe / <a href="https://www.flaticon.com/free-icon/click_4620328">flaticon.com</a><img></li>
+            <li>Creative Stall Premium / <a href="https://www.flaticon.com/free-icon/pdf-file_2889358">flaticon.com</a><img></li>
+            <li>IconMarketPK / <a href="https://www.flaticon.com/free-icon/odf_5105577">flaticon.com</a><img></li>
+            <li>juicy_fish / <a href="https://www.flaticon.com/free-icon/file_14969617">flaticon.com</a><img></li>
+            <li>Tanah Basah / <a href="https://www.flaticon.com/free-icon/key_7542181">flaticon.com</a><img></li>
         </ul></p>
         
         <h1>Kontakt</h1>
@@ -222,44 +232,31 @@ const client = supabase.createClient(
 
 async function loginCheck() {
     const { data: { user } } = await client.auth.getUser();
-    const navStart = document.querySelector('li[data-href="../index.html"]');
-
+    const navButton = document.querySelector("nav div li:nth-of-type(2)");
+    
     if (!user) {
-        navStart.innerHTML = "Startseite (Login)";
-    } else {
-        navStart.innerHTML = "Startseite (Logout)";
+        navButton.title = "zum Login";
+        navButton.onclick = () => {
+            window.location.href = "../index.html";
+        }
+    } else { 
+        navButton.title = "Logout";
+        navButton.onclick = () => {
+            window.location.href = "../index.html?do=logout";
+        }
     }
 }
 loginCheck();
-
-async function checkOrga() {
-    const navEdit = document.querySelectorAll(".navEdit");
-    const { data: { user } } = await client.auth.getUser();
-
-    const { data, error } = await client
-        .from("profile")
-        .select("orga")
-        .eq("uid", user.id)
-        .single();
-
-    if (error) {
-        console.error(error);
-        alert(error.message);
-        return;
-    }
-
-    if (data.orga) {
-        navEdit.forEach(li => {
-            li.style.display = "block";
-        });
-
-    } else {
-        navEdit.forEach(li => {
-            li.style.display = "none";
-        });
-    }
-}
 checkOrga();
+
+document.querySelectorAll("#links a").forEach(a => {
+    a.title = "Externer Link";
+    a.target = "_blank";
+});
+
+document.querySelectorAll("#links img").forEach(img => {
+    img.src = "../b/extern.png";
+});
 </script>
 </body>
 
