@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>KAT | Projekte</title>
+    <meta name="author" content="&Eacute;mile Jeremias Ruff">        
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+    <meta charset="UTF-8">
+
+    <link rel="icon" type="image/png" href="../../../../favicon.ico">
+    <link rel="stylesheet" href="../../../../stylesheet.css" type="text/css">
+    <link rel="stylesheet" href="projekte-style.css" type="text/css">
+</head>
+<body>
+    <img id="openNav" src="../../../../b/menue2.png" title="Menü" alt="Buergermenue">
+    <nav>
+        <ul>
+            <div>
+                <li data-href="../../index.html">Startseite</li>
+                <li><img src="../../b/auth-2.png" alt="Authentifizierungssymbol"></li>
+            </div>
+            <li data-href="../meine-klasse.html">Meine Klasse</li>
+            <li data-href="../mein-projekt.html">Mein Projekt</li>
+            <li data-href="../sus" class="navEdit">Sch&uuml;ler&uuml;bersicht</li>
+            <li data-href="index.html" class="navEdit hier">Projekte&uuml;bersicht</li>
+            <li data-href="../zuweisung.html" class="navEdit">Zuweisung</li>
+        </ul>
+        <ul>
+            <li data-href="../impressum.html">Impressum & Kontakt</li>
+            <li data-href="../datenschutz.html">Datenschutz</li>
+        </ul>
+    </nav>
+    
+    <main>
+        <img id="openLightbox" src="../../../../b/hilfe.png" title="Hilfe">
+
+        <h1>Projekte</h1>
+
+        <div>
+            <button id="viewBtn" title="Betrachter-Modus"><img src="../../../../b/view_2.png" alt="Symbolbild eines Auges"></button>
+            <button id="editBtn" title="Bearbeitungsmodus"><img src="../../../../b/edit.png" alt="Symbolbild eines Stiftes"></button>
+        </div>
+        <button id="saveBtn" title="Speichern"><img src="../../../../b/save.png" alt="Symbolbild einer Diskette"></button>
+        <button id="openDownDrop" title="eine Kopie als PDF herunterladen"><img src="../../../../b/download.png" alt="Pfeil aus Wolke nach unten"></button>
+
+        <select id="downDrop" style="display: none;">
+            <option>Format wählen</option>
+            <option value="pdf">PDF</option>
+            <option value="ods">ODS</option>
+            <option value="excel">Excel</option>
+        </select>
+
+        <table id="projekte">
+            <thead>
+            <tr><th>id</th>
+                <th>Titel</th>
+                <th>Min Stufe</th>
+                <th>Max Stufe</th>
+                <th>Pl&auml;tze</th>
+                <th>belegt</th>
+                <th>frei</th>
+                <th>Durchf&uuml;hrende</th>
+                <th>Lehrkraft</th>
+                <th>Ort</th>
+                <th>Start</th>
+                <th>Ende</th>
+                <th>Anmerkungen</th>
+                <th>Kontakt</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <table id="projekteNeu"><tr><td id="new" style="display: none;">+</td></tr></table>
+
+        <p id="openOptions" onclick="openElement('options'); changeArrow()">erweiterte Optionen <img src="../../../../b/arrow.png" alt="Pfeil nach unten"></p>
+        <ul id="options" style="display: none;">
+            <li onclick="changeOverflow('projektabsagung'); openProjektabsagung();" title="ein Projekt absagen und alle Sch&uuml;ler neuverteilen">Projekt absagen</li>
+            <li onclick="changeOverflow('logs'); openlogs();" title="alle &Auml;nderungen einsehen">&Auml;nderungsverlauf einsehen</li>
+            <!--li onclick="openElement('versionierung')">Versionierung</li-->
+        </ul>
+    </main>
+
+    <div id="projektabsagung" style="display: none;">
+        <div>
+            <h1>Projekt absagen</h1>
+            <img src="../../../../b/exit.png" alt="Kreuz" onclick="changeOverflow('projektabsagung'); openElement('projektabsagung'); closeProjektabsage();">
+            <p>Projekt w&auml;hlen: <select id="absageProjektSelect"></select></p>
+            <p id="absageInfo"></p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <td>id</td>
+                        <td>Klasse</td>
+                        <td>Name</td>
+                        <td>Mail</td>
+                        <td>neues Projekt (Ort/Zeit)</td>
+                        <td title="Erstwunsch">Erst.</td>
+                        <td title="Zweitwunsch">Zweit.</td>
+                        <td title="Drittwunsch">Dritt.</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            
+            <div>
+                <button id="downloadAbsage"><img src="../../../../b/download.png" alt="Download-Symbol" title="Liste ge&auml;nderter Sch&uuml;ler herunterladen"></img></button>
+                <button id="absagen">Projekt absagen</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="logs" style="display: none;">
+        <div>
+            <h1>&Auml;nderungsverlauf</h1>
+            <img src="../../../../b/exit.png" alt="Kreuz" onclick="changeOverflow('logs'); openElement('logs');">
+            <table>
+                <thead>
+                    <tr>
+                        <td>id</td>
+                        <td>was?</td>
+                        <td>vorher?</td>
+                        <td>wer?</td>
+                        <td>wann?</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!--div id="versionierung" style="display: none;"></div-->
+
+    <div id="lightbox">
+        <img src="../../../../b/projekte-1.png" alt="Anleitung">
+        <img id="lightArrow" src="../../../../b/arrow.png" alt="Pfeil nach unten">
+        <img src="../../../../b/projekte-2.png" alt="Anleitung">
+    </div>
+    <img id="loader" src="../../../../b/logo.png" alt="Logo des Klimarates">
+
+    <div id="mobile">
+        <h1>Projekte&uuml;bersicht</h1>
+        <div>
+            <button onclick="downloadAsPdf()"><img src="../../../../b/pdf.png" alt="PDF Symbol"></button>
+            <button onclick="downloadAsOds()"><img src="../../../../b/ods.png" alt="ODS Symbol"></button>
+        </div>
+        <div>
+            <button onclick="downloadAsExcel()"><img src="../../../../b/excel.png" alt="Excel Symbol"></button>
+            <button id="goYourWay">Desktop simulieren<br><br>(nicht empfohlen)</button>
+        </div>
+    </div>
+
+<script src="../../../../script.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const client = supabase.createClient(
+    "https://euuptkidjsquvhohvicv.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1dXB0a2lkanNxdXZob2h2aWN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwMDk4OTksImV4cCI6MjA3MDU4NTg5OX0.O1isV0Ove_Tb1ruXqY_dlD4UdQGM174eVw9Kp_22YO4"
+);
+
+async function loginCheck() {
+    const { data: { user } } = await client.auth.getUser();
+    const navButton = document.querySelector("nav div li:nth-of-type(2)");
+    
+    if (!user) {
+        navButton.title = "zum Login";
+        navButton.onclick = () => {
+            window.location.href = "../../index.html";
+        }
+        if (confirm("Zur Nutzung dieser Seite müssen Sie sich zunächst einloggen. Wollen Sie zum Login weitergeleitet werden?")) {
+            window.location.href = "../../index.html";
+        } else { return }
+    } else { 
+        navButton.title = "Logout";
+        navButton.onclick = () => {
+            window.location.href = "../../index.html?do=logout";
+        }
+    }
+
+    const { data, error } = await client
+        .from("profile")
+        .select("orga")
+        .eq("uid", user.id)
+        .single();
+
+    if (error) {
+        console.error(error);
+        alert(error.message);
+        return;
+    }
+
+    else {
+        if (!data.orga) {
+            alert("Sie verfügen nicht über die nötigen Zugriffsrechte zur Nutzung dieser Seite.");
+            window.location.href = "../../index.html";
+        }
+    }
+}
+loginCheck();
+checkOrga();
+
+// suess
+function openElement(id) {
+    const element = document.getElementById(id);
+    
+    if (element.style.display === "none") {
+        element.style.display = "block";
+        
+    } else {
+        element.style.display = "none";
+    }
+}
+
+function changeOverflow(id) {
+    const element = document.getElementById(id);
+
+    if (element.style.display === "none") {
+        document.querySelector("body").style.overflowX = "hidden";
+        document.querySelector("body").style.overflowY = "hidden";
+        element.style.overflowX = "auto";
+        element.style.overflowY = "auto";
+        
+    } else {
+        document.querySelector("body").style.overflowX = "auto";
+        document.querySelector("body").style.overflowY = "auto";
+        element.style.overflowX = "hidden";
+        element.style.overflowY = "hidden";
+    }
+}
+
+function closeProjektabsage() {
+    document.querySelector("#projektabsagung table").style.display = "none";
+    document.querySelector("#projektabsagung > div > div").style.display = "none";
+}
+
+function changeArrow() {
+    const arrow = document.querySelector("#openOptions img");
+    
+    if (arrow.src.endsWith("/arrow.png")) {
+        arrow.src = "../../b/arrow-up.png";
+        arrow.alt = "Pfeil nach oben"
+    } else {
+        arrow.src = "../../b/arrow.png";
+        arrow.alt = "Pfeil nach unten";
+    }
+}
+
+// der heisse Scheiss
+let modus = "view";
+
+const viewBtn = document.getElementById("viewBtn");
+const editBtn = document.getElementById("editBtn");
+const newBtn = document.getElementById("new");
+const saveBtn = document.getElementById("saveBtn");
+
+const fieldTypes = {
+    titel: "text",
+    stufe_min: "number",
+    stufe_max: "number",
+    plaetze: "number",
+    belegt: "number",
+    frei: "number",
+    durchfuerende: "text",
+    lehrkraft: "text",
+    ort: "text",
+    startzeit: "time",
+    endzeit: "time",
+    materialien: "text",
+    kontakt: "text"
+};
+
+const logFeldnamen = {
+    titel: "neuer Titel",
+    stufe_min: "neue Mindeststufe",
+    stufe_max: "neue Maximalstufe",
+    plaetze: "neue Anzahl Plätze",
+    durchfuerende: "neue Durchführende",
+    lehrkraft: "neue Lehrkraft",
+    ort: "neuer Ort",
+    startzeit: "neue Startzeit",
+    endzeit: "neue Endzeit",
+    materialien: "neue Anmerkungen",
+    kontakt: "neuer Kontaktvermerk"
+};
+
+function updateButtons() {
+    if (modus === "view") {
+        viewBtn.style.backgroundColor = "rgba(255,255,255,0.1)";
+        editBtn.style.backgroundColor = "transparent";
+        newBtn.style.display = "none";
+        saveBtn.style.display = "none";
+
+        document.querySelectorAll("#projekte tbody td[data-field]").forEach(td => {
+            const field = td.dataset.field;
+
+            if (["belegt", "frei"].includes(field)) {
+                td.title = "";
+            }
+
+            if (["id", "belegt", "frei"].includes(field)) {
+                td.style.cursor = "auto";
+                return;
+            }
+
+            const input = td.querySelector("input");
+
+            if (input) {
+                td.textContent = input.value;
+            }
+        });
+
+    } else {
+        viewBtn.style.backgroundColor = "transparent";
+        editBtn.style.backgroundColor = "rgba(255, 255, 255, 0.15)";
+        newBtn.style.display = "block";
+        saveBtn.style.display = "block";
+
+        document.querySelectorAll("#projekte tbody td[data-field]").forEach(td => {
+            const field = td.dataset.field;
+
+            if (["belegt", "frei"].includes(field)) {
+                td.title = "Dieser Wert wird berechnet und kann daher nicht geändert werden.";
+            }
+
+            if (["id", "belegt", "frei"].includes(field)) {
+                td.style.cursor = "not-allowed";
+                return;
+            }
+
+            const value = td.textContent;
+            td.innerHTML = "";
+            const input = document.createElement("input");
+            input.type = fieldTypes[field] || "text";
+            input.value = value;
+
+            td.appendChild(input);
+        });
+    }
+}
+
+viewBtn.onclick = () => {
+    modus = "view";
+    updateButtons();
+};
+
+editBtn.onclick = async () => {
+    const {
+        data: { user }
+    } = await client.auth.getUser();
+
+    if (!user) {
+        alert("Nicht angemeldet.");
+        return;
+    }
+
+    const { data, error } = await client
+        .from("profile")
+        .select("edit")
+        .eq("uid", user.id)
+        .single();
+
+    if (error) {
+        console.error(error);
+        alert(error.message);
+        return;
+    }
+
+    if (data.edit) {
+        modus = "edit";
+        updateButtons();
+    } else {
+        alert("Sie haben keine Berechtigung zum Bearbeiten.");
+    }
+};
+
+newBtn.onclick = () => {
+    const tbody = document.querySelector("#projekte tbody");
+    const rows = tbody.querySelectorAll("tr");
+
+    let maxId = 0;
+
+    rows.forEach(row => {
+        const id = Number(row.querySelector('[data-field="id"]').textContent);
+        if (id > maxId) {
+            maxId = id;
+        }
+    });
+
+    const neueId = maxId + 1;
+    const tr = document.createElement("tr");
+    tr.dataset.new = "true";
+
+    tr.innerHTML = `
+        <td data-field="id">${neueId}</td>
+        <td data-field="titel"><input type="text"></td>
+        <td data-field="stufe_min"><input type="number"></td>
+        <td data-field="stufe_max"><input type="number"></td>
+        <td data-field="plaetze"><input type="number"></td>
+        <td data-field="belegt">0</td>
+        <td data-field="frei">0</td>
+        <td data-field="durchfuerende"><input type="text"></td>
+        <td data-field="lehrkraft"><input type="text"></td>
+        <td data-field="ort"><input type="text"></td>
+        <td data-field="startzeit"><input type="time"></td>
+        <td data-field="endzeit"><input type="time"></td>
+        <td data-field="materialien"><input type="text"></td>
+        <td data-field="kontakt"><input type="text"></td>
+    `;
+
+    tbody.appendChild(tr);
+};
+
+async function schreibeLog(action, vorher = null) {
+    const {
+        data: { user },
+        error: userError
+    } = await client.auth.getUser();
+
+    if (userError || !user) {
+        throw new Error("Kein eingeloggter Benutzer für das Log gefunden.");
+    }
+
+    const { error } = await client
+        .from("kat_projekte_logs")
+        .insert({
+            action: action,
+            vorher: vorher,
+            user: user.id
+        });
+
+    if (error) {
+        console.error("Fehler beim Schreiben des Logs:", error);
+        throw new Error(`Log konnte nicht gespeichert werden: ${error.message}`);
+    }
+}
+
+saveBtn.onclick = async () => {
+    if (modus !== "edit") return;
+
+    if (!confirm("Sind Sie sich sicher, dass Sie die Änderungen hochladen und bisherige Projektdaten überschreiben wollen?")) {
+        return;
+    }
+
+    try {
+        const loader = document.getElementById("loader");
+        loader.style.display = "block";
+
+        const rows = document.querySelectorAll("#projekte tbody tr");
+        for (const row of rows) {
+
+            const updateData = {};
+            let id = null;
+
+            row.querySelectorAll("td[data-field]").forEach(td => {
+                const field = td.dataset.field;
+
+                if (field === "id") {
+                    id = Number(td.textContent);
+                    return;
+                }
+
+                if (["belegt", "frei"].includes(field)) {
+                    return;
+                }
+
+                const input = td.querySelector("input");
+                let value = input ? input.value : td.textContent;
+
+                if (["stufe_min", "stufe_max", "plaetze"].includes(field)) {
+                    value = value === "" ? null : Number(value);
+                }
+                updateData[field] = value;
+            });
+
+
+            // neu
+            if (row.dataset.new === "true") {
+
+                updateData.id = id;
+                updateData.status = "true";
+                const { error } = await client
+                    .from("kat_projekte")
+                    .insert(updateData);
+
+                if (error) {
+                    console.error(error);
+                    alert(`Fehler beim Anlegen von Projekt ${id}: ${error.message}`);
+                    return;
+                }
+
+                try {
+                    await schreibeLog(
+                        `neues Projekt angelegt: ${updateData.titel ?? ""} (${id})`
+                    );
+                } catch (logError) {
+                    console.error(logError);
+                    alert(
+                        `Projekt ${id} wurde gespeichert, aber das Änderungsprotokoll konnte nicht geschrieben werden:\n\n${logError.message}`
+                    );
+                }
+                continue;
+            }
+
+
+            // bestehend
+
+            // Alten Stand holen
+            const { data: altesProjekt, error: selectError } = await client
+                .from("kat_projekte")
+                .select("*")
+                .eq("id", id)
+                .single();
+
+            if (selectError) {
+                console.error(selectError);
+                alert(`Fehler beim Laden des alten Standes von Projekt ${id}: ${selectError.message}`);
+                return;
+            }
+
+
+            // Projekt speichern
+            const { error: updateError } = await client
+                .from("kat_projekte")
+                .update(updateData)
+                .eq("id", id);
+
+            if (updateError) {
+                console.error(updateError);
+                alert(`Fehler bei Projekt ${id}: ${updateError.message}`);
+                return;
+            }
+
+
+            // Änderungen
+
+            for (const feld of Object.keys(logFeldnamen)) {
+
+                let alterWert = altesProjekt[feld];
+                let neuerWert = updateData[feld];
+
+                // Leere Eingaben und null gleich behandeln
+                if (alterWert === null) alterWert = "";
+                if (neuerWert === null) neuerWert = "";
+
+                if (["startzeit", "endzeit"].includes(feld)) {
+                    alterWert = String(alterWert).slice(0, 5);
+                    neuerWert = String(neuerWert).slice(0, 5);
+                }
+
+                if (String(alterWert) === String(neuerWert)) {
+                    continue;
+                }
+
+                const projektTitel =
+                    feld === "titel"
+                        ? neuerWert
+                        : altesProjekt.titel;
+
+                try {
+                    await schreibeLog(
+                        `${projektTitel ?? ""} (${id}) | ` +
+                        `${logFeldnamen[feld]}: ${neuerWert}`,
+                        alterWert
+                    );
+                } catch (logError) {
+                    console.error(logError);
+
+                    alert(
+                        `Projekt ${id} wurde gespeichert, aber ein Änderungsprotokoll konnte nicht geschrieben werden:\n\n${logError.message}`
+                    );
+
+                    // Nicht das Projekt rückgängig machen. Es wurde erfolgreich gespeichert.
+                    break;
+                }
+            }
+        }
+    }
+    
+    finally {
+        document.getElementById("loader").style.display = "none";
+    }
+
+    modus = "view";
+    updateButtons();
+
+    // Tabelle für frei/belegt neu laden
+    await ladeProjekte();
+
+    alert("Alle Änderungen wurden gespeichert.");
+};
+updateButtons();
+
+async function askForLogs() {
+    const { data: logs, error: logsError } = await client
+        .from("kat_projekte_logs")
+        .select("*")
+        .order("id", { ascending: false });
+
+    if (logsError) {
+        console.error(logsError);
+        alert(`Fehler beim Laden der Logs: ${logsError.message}`);
+        return;
+    }
+
+    const { data: profile, error: profileError } = await client
+        .from("profile")
+        .select("uid, name");
+
+    if (profileError) {
+        console.error(profileError);
+        alert(`Fehler beim Laden der Benutzer: ${profileError.message}`);
+        return;
+    }
+
+    const namen = {};
+    profile.forEach(person => {
+        namen[person.uid] = person.name;
+    });
+
+
+    const tbody = document.querySelector("#logs table tbody");
+    tbody.innerHTML = "";
+
+
+    logs.forEach(log => {
+        const tr = document.createElement("tr");
+
+        const datum =
+            new Date(log.created_at).toLocaleDateString("de-DE") +
+            " um " +
+            new Date(log.created_at).toLocaleTimeString("de-DE", {
+                hour: "2-digit",
+                minute: "2-digit"
+            }) +
+            " Uhr";
+
+        const benutzername = namen[log.user] ?? "Unbekannter Benutzer";
+
+        tr.innerHTML = `
+            <td>${log.id}</td>
+            <td>${log.action}</td>
+            <td>${log.vorher ?? ""}</td>
+            <td>${benutzername}</td>
+            <td>${datum}</td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+}
+
+async function openlogs() {
+    await askForLogs();
+    openElement("logs");
+}
+</script>
+
+<script src="projektabsage.js"></script>
+<script>
+async function ladeProjekte() {
+    // Projekte laden
+    const { data: projekte, error: projekteError } = await client
+        .from("kat_projekte")
+        .select("*")
+        .order("id");
+
+    if (projekteError) {
+        console.error(projekteError);
+        alert(projekteError.message);
+        return;
+    }
+
+    // Schüler laden (nur Zuordnung)
+    const { data: schueler, error: schuelerError } = await client
+        .from("kat_sus")
+        .select("zugeordnet");
+
+    if (schuelerError) {
+        console.error(schuelerError);
+        alert(schuelerError.message);
+        return;
+    }
+
+    // Anzahl belegter Plätze pro Projekt berechnen
+    const belegt = {};
+
+    schueler.forEach(s => {
+        if (s.zugeordnet != null) {
+            belegt[s.zugeordnet] = (belegt[s.zugeordnet] || 0) + 1;
+        }
+    });
+
+    const tbody = document.querySelector("#projekte tbody");
+    tbody.innerHTML = "";
+
+    projekte.forEach(p => {
+        const anzahlBelegt = belegt[p.id] || 0;
+        const anzahlFrei = (p.plaetze || 0) - anzahlBelegt;
+
+        const tr = document.createElement("tr");
+
+        if (p.status !== true) {
+            tr.classList.add("abgesagt");
+            tr.title = "Projekt wurde abgesagt.";
+        }
+
+        tr.innerHTML = `
+            <td data-field="id">${p.id}</td>
+            <td data-field="titel">${p.titel ?? ""}</td>
+            <td data-field="stufe_min">${p.stufe_min ?? ""}</td>
+            <td data-field="stufe_max">${p.stufe_max ?? ""}</td>
+            <td data-field="plaetze">${p.plaetze ?? ""}</td>
+            <td data-field="belegt">${anzahlBelegt}</td>
+            <td data-field="frei">${anzahlFrei}</td>
+            <td data-field="durchfuerende">${p.durchfuerende ?? ""}</td>
+            <td data-field="lehrkraft">${p.lehrkraft ?? ""}</td>
+            <td data-field="ort">${p.ort ?? ""}</td>
+            <td data-field="startzeit">${p.startzeit ? p.startzeit.slice(0,-3) : ""}</td>
+            <td data-field="endzeit">${p.endzeit ? p.endzeit.slice(0,-3) : ""}</td>
+            <td data-field="materialien">${p.materialien ?? ""}</td>
+            <td data-field="kontakt">${p.kontakt ?? ""}</td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+}
+ladeProjekte();
+</script>
+<script type="module" src="download.js"></script>
+</body>
+
+</html>

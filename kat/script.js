@@ -58,6 +58,7 @@ document.getElementById("openLightbox").onclick = () => {
     if (getComputedStyle(lightbox).display === "none") {
         lightbox.style.display = "block";
         document.querySelector("body").style.overflowY = "hidden";
+        document.querySelector("body").style.overflowX = "hidden";
     }
 }
 
@@ -65,6 +66,7 @@ lightbox.onclick = (e) => {
     if (e.target === lightbox) {
         lightbox.style.display = "none";
         document.querySelector("body").style.overflowY = "auto";
+        document.querySelector("body").style.overflowX = "auto";
     }
 }
 

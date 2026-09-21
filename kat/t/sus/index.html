@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <title>KAT | Sch&uuml;ler</title>
+    <meta name="author" content="&Eacute;mile Jeremias Ruff">        
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+    <meta charset="UTF-8">
+
+    <link rel="icon" type="image/png" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../stylesheet.css" type="text/css">
+    <link rel="stylesheet" href="sus-style.css" type="text/css">
+</head>
+<body>
+    <img id="openNav" src="../../b/menue2.png" alt="Buergermenue">
+    <nav>
+        <ul>
+            <div>
+                <li data-href="../../index.html">Startseite</li>
+                <li><img src="../../b/auth-2.png" alt="Authentifizierungssymbol"></li>
+            </div>
+            <li data-href="../meine-klasse.html">Meine Klasse</li>
+            <li data-href="../mein-projekt.html">Mein Projekt</li>
+            <li data-href="index.html" class="navEdit hier">Sch&uuml;ler&uuml;bersicht</li>
+            <li data-href="../projekte" class="navEdit">Projekte&uuml;bersicht</li>
+            <li data-href="../zuweisung.html" class="navEdit">Zuweisung</li>
+        </ul>
+        <ul>
+            <li data-href="../impressum.html">Impressum & Kontakt</li>
+            <li data-href="../datenschutz.html">Datenschutz</li>
+        </ul>
+    </nav>
+    
+    <main>
+        <img id="openLightbox" src="../../b/hilfe.png" title="Hilfe">
+
+        <h1>Sch&uuml;ler</h1>
+
+        <div>
+            <button id="viewBtn" title="Betrachter-Modus"><img src="../../b/view_2.png" alt="Symbolbild eines Auges"></button>
+            <button id="editBtn" title="Bearbeitungsmodus"><img src="../../b/edit.png" alt="Symbolbild eines Stiftes"></button>
+        </div>
+        <button id="saveBtn" title="Speichern"><img src="../../b/save.png" alt="Symbolbild einer Diskette"></button>
+        <button id="openDownDrop" title="eine Kopie als PDF herunterladen"><img src="../../b/download.png" alt="Pfeil aus Wolke nach unten"></button>
+
+        <select id="downDrop" style="display: none;">
+            <option>Format wählen</option>
+            <option value="pdf">PDF</option><!-- fuer gefilterten Download -->
+            <option value="ods">ODS</option>
+            <option value="excel">Excel</option>
+        </select>
+
+        <div id="filter">
+            <p>Filtern nach:</p>
+            <div class="select">
+                <button class="selected">-</button>
+
+                <div class="options">
+                    <div data-value="id">id</div>
+                    <div data-value="klasse">Klasse</div>
+                    <div data-value="name">Namen</div>
+                    <div data-value="mail">E-Mail</div>
+                    <div data-value="zugeordnet">Projekt</div>
+                </div>
+
+                <div id="optionsLightbox"></div>
+            </div>
+            <p>=</p>
+            <input type="text" name="filter">
+        </div>
+
+        <table id="sus">
+            <thead>
+            <tr><td>id <img src="../../b/arrow.png" data-sort="id" title="nach id sortieren"></td>
+                <td>Klasse <img src="../../b/arrow.png" data-sort="klasse" title="nach Klasse sortieren"> </td>
+                <td>Name <img src="../../b/arrow.png" data-sort="name" title="nach Namen sortieren"></td>
+                <td>E-Mail <img src="../../b/arrow.png" data-sort="mail" title="nach E-Mail-Adresse sortieren"></td>
+                <td>Projekt <img src="../../b/arrow.png" data-sort="zugeordnet" title="nach Projekt sortieren"></td>
+                <td title="Erstwunsch">Erst. <img src="../../b/arrow.png" data-sort="erstwunsch" title="nach Erstwunsch sortieren"></td>
+                <td title="Zweitwunsch">Zweit. <img src="../../b/arrow.png" data-sort="zweitwunsch" title="nach Zweitwunsch sortieren"></td>
+                <td title="Drittwunsch">Dritt. <img src="../../b/arrow.png" data-sort="drittwunsch" title="nach Drittwunsch sortieren"></td>
+            </tr>
+            </thead>
+
+            <tbody></tbody>
+        </table>
+
+        <table style="width: 150%" id="susNeu"><tr><td id="new">+</td></tr></table>
+
+        <p id="openOptions" onclick="openElement('options')">erweiterte Optionen <img src="../../b/arrow.png" alt="Pfeil nach unten"></p>
+        <ul id="options" style="display: none;">
+            <li onclick="changeOverflow('logs'); openlogs();" title="alle &Auml;nderungen einsehen">&Auml;nderungsverlauf einsehen</li>
+            <!--li onclick="openElement('versionierung')">Versionierung</li-->
+        </ul>
+    </main>
+
+    <div id="logs" style="display: none;">
+        <div>
+            <h1>&Auml;nderungsverlauf</h1>
+            <img src="../../b/exit.png" alt="Kreuz" onclick="changeOverflow('logs'); openElement('logs');">
+            <table>
+                <thead>
+                    <tr>
+                        <td>id</td>
+                        <td>was?</td>
+                        <td>vorher?</td>
+                        <td>wer?</td>
+                        <td>wann?</td>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="lightbox">
+        <img src="../../b/sus-1.png" alt="Anleitung">
+        <img id="lightArrow" src="../../b/arrow.png" alt="Pfeil nach unten">
+        <img src="../../b/sus-2.png" alt="Anleitung">
+    </div>
+    <img id="loader" src="../../b/logo.png" alt="Logo des Klimarates">
+
+    <div id="mobile">
+        <h1>Sch&uuml;ler&uuml;bersicht</h1>
+        <div>
+            <button onclick="downloadAsPdf()"><img src="../../b/pdf.png" alt="PDF Symbol"></button>
+            <button onclick="downloadAsOds()"><img src="../../b/ods.png" alt="ODS Symbol"></button>
+        </div>
+        <div>
+            <button onclick="downloadAsExcel()"><img src="../../b/excel.png" alt="Excel Symbol"></button>
+            <button id="goYourWay">Desktop simulieren<br><br>(nicht empfohlen)</button>
+        </div>
+    </div>
+
+<script src="../../script.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const client = supabase.createClient(
+    "https://euuptkidjsquvhohvicv.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV1dXB0a2lkanNxdXZob2h2aWN2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTUwMDk4OTksImV4cCI6MjA3MDU4NTg5OX0.O1isV0Ove_Tb1ruXqY_dlD4UdQGM174eVw9Kp_22YO4"
+);
+
+async function loginCheck() {
+    const { data: { user } } = await client.auth.getUser();
+    const navButton = document.querySelector("nav div li:nth-of-type(2)");
+    
+    if (!user) {
+        navButton.title = "zum Login";
+        navButton.onclick = () => {
+            window.location.href = "../../index.html";
+        }
+        if (confirm("Zur Nutzung dieser Seite müssen Sie sich zunächst einloggen. Wollen Sie zum Login weitergeleitet werden?")) {
+            window.location.href = "../../index.html";
+        } else { return }
+    } else { 
+        navButton.title = "Logout";
+        navButton.onclick = () => {
+            window.location.href = "../../index.html?do=logout";
+        }
+    }
+
+    const { data, error } = await client
+        .from("profile")
+        .select("orga")
+        .eq("uid", user.id)
+        .single();
+
+    if (error) {
+        console.error(error);
+        alert(error.message);
+        return;
+    }
+
+    else {
+        if (!data.orga) {
+            alert("Sie verfügen nicht über die nötigen Zugriffsrechte zur Nutzung dieser Seite.");
+            window.location.href = "../../index.html";
+        }
+    }
+}
+loginCheck();
+checkOrga();
+
+function openElement(id) {
+    const element = document.getElementById(id);
+    
+    if (element.style.display === "none") {
+        element.style.display = "block";
+        
+    } else {
+        element.style.display = "none";
+    }
+}
+
+function changeOverflow(id) {
+    const element = document.getElementById(id);
+
+    if (element.style.display === "none") {
+        document.querySelector("body").style.overflowX = "hidden";
+        document.querySelector("body").style.overflowY = "hidden";
+        element.style.overflowX = "auto";
+        element.style.overflowY = "auto";
+        
+    } else {
+        document.querySelector("body").style.overflowX = "auto";
+        document.querySelector("body").style.overflowY = "auto";
+        element.style.overflowX = "hidden";
+        element.style.overflowY = "hidden";
+    }
+}
+
+const select = document.querySelector(".select");
+const selected = select.querySelector(".selected");
+let filterFeld = null;
+
+selected.onclick = () => {
+    select.classList.toggle("open");
+    optionsLightbox.style.display = "block";
+};
+
+select.querySelectorAll(".options div").forEach(option => {
+    option.onclick = () => {
+        filterFeld = option.dataset.value;
+
+        selected.textContent = option.textContent;
+        select.classList.remove("open");
+        optionsLightbox.style.display = "none";
+
+        filterTabelle();
+    };
+});
+
+const filterInput = document.querySelector('#filter input');
+filterInput.addEventListener("input", filterTabelle);
+
+function filterTabelle() {
+    const suchtext = filterInput.value.toLowerCase();
+
+    document.querySelectorAll("#sus tbody tr").forEach(row => {
+        if (!filterFeld || !suchtext) {
+            row.style.display = "";
+            return;
+        }
+
+        const zelle = row.querySelector(`[data-field="${filterFeld}"]`);
+        const wert = zelle?.textContent.toLowerCase() ?? "";
+        row.style.display = wert.includes(suchtext) ? "" : "none";
+    });
+}
+
+let modus = "view";
+
+const viewBtn = document.getElementById("viewBtn");
+const editBtn = document.getElementById("editBtn");
+const newBtn = document.getElementById("new");
+const saveBtn = document.getElementById("saveBtn");
+
+const fieldTypes = {
+    titel: "text",
+    stufe_min: "number",
+    stufe_max: "number",
+    plaetze: "number",
+    durchfuerende: "text",
+    lehrkraft: "text",
+    ort: "text",
+    startzeit: "time",
+    endzeit: "time",
+    materialien: "text",
+    kontakt: "text"
+};
+
+const logFeldnamen = {
+    klasse: "neue Klasse",
+    name: "neuer Name",
+    mail: "neue E-Mail-Adresse",
+    zugeordnet: "neues Projekt zugeordnet",
+    erstwunsch: "neuer Erstwunsch",
+    zweitwunsch: "neuer Zweitwunsch",
+    drittwunsch: "neuer Drittwunsch"
+};
+
+let projektAenderungSchueler = null;
+
+function updateButtons() {
+    if (modus === "view") {
+        viewBtn.style.backgroundColor = "rgba(255,255,255,0.1)";
+        editBtn.style.backgroundColor = "transparent";
+        newBtn.style.display = "none";
+        saveBtn.style.display = "none";
+
+        document.querySelectorAll("#sus tbody td[data-field]").forEach(td => {
+            if (td.dataset.field === "id")
+                return;
+
+            const input = td.querySelector("input");
+
+            if (input) {
+                td.textContent = input.value;
+            }
+        });
+
+    } else {
+        viewBtn.style.backgroundColor = "transparent";
+        editBtn.style.backgroundColor = "rgba(255,255,255,0.1)";
+        newBtn.style.display = "block";
+        saveBtn.style.display = "block";
+
+        document.querySelectorAll("#sus tbody td[data-field]").forEach(td => {
+            const field = td.dataset.field;
+
+            if (field === "id") {
+                td.style.cursor = "not-allowed";
+                return;
+            }
+
+            const value = td.textContent;
+            td.innerHTML = "";
+
+            if (field === "zugeordnet") {
+                const select = document.createElement("select");
+
+                const row = td.closest("tr");
+                const schuelerId = Number(
+                    row.querySelector('[data-field="id"]').textContent
+                );
+
+                const aktuelleId = value.split(" - ")[0];
+                const leer = document.createElement("option");
+                leer.value = "";
+                leer.textContent = "";
+                select.appendChild(leer);
+
+                Object.entries(projekte).forEach(([id, projekt]) => {
+                    const option = document.createElement("option");
+
+                    option.value = id;
+                    option.textContent = `${id} - ${projekt.titel}`;
+
+                    if (
+                        projekt.status !== true ||
+                        (
+                            projekt.frei <= 0 &&
+                            String(id) !== aktuelleId
+                        )
+                    ) {
+                        option.disabled = true;
+
+                        if (projekt.status !== true) {
+                            option.textContent += " (abgesagt)";
+                        } else {
+                            option.textContent += " (voll)";
+                        }
+                    }
+
+                    select.appendChild(option);
+                });
+
+                select.value = aktuelleId;
+                select.addEventListener("mousedown", event => {
+                    if (
+                        projektAenderungSchueler !== null &&
+                        projektAenderungSchueler !== schuelerId
+                    ) {
+                        event.preventDefault();
+
+                        alert(
+                            "Sie können pro Speichervorgang nur die " +
+                            "Projektzuordnung eines Schülers ändern. " +
+                            "Bitte speichern Sie zuerst die bisherige Änderung."
+                        );
+                    }
+                });
+
+                select.addEventListener("change", () => {
+                    const neuerWert = select.value;
+
+                    if (neuerWert === aktuelleId) {
+                        return;
+                    }
+
+                    if (projektAenderungSchueler === null) {
+                        projektAenderungSchueler = schuelerId;
+                        return;
+                    }
+
+                    if (projektAenderungSchueler === schuelerId) {
+                        return;
+                    }
+
+                    alert(
+                        "Sie können pro Speichervorgang nur die " +
+                        "Projektzuordnung eines Schülers ändern. " +
+                        "Bitte speichern Sie zuerst die bisherige Änderung."
+                    );
+
+                    select.value = aktuelleId;
+                });
+
+                td.appendChild(select);
+            }
+            else {
+                const input = document.createElement("input");
+                input.type = fieldTypes[field] || "text";
+                input.value = value;
+
+                td.appendChild(input);
+            }
+        });
+    }
+}
+
+viewBtn.onclick = () => {
+    modus = "view";
+    projektAenderungSchueler = null;
+
+    updateButtons();
+};
+
+editBtn.onclick = async () => {
+    const {
+        data: { user }
+    } = await client.auth.getUser();
+
+    if (!user) {
+        alert("Nicht angemeldet.");
+        return;
+    }
+
+    const { data: profileData, error } = await client
+        .from("profile")
+        .select("edit")
+        .eq("uid", user.id)
+        .single();
+
+    if (error) {
+        console.error(error);
+        alert(error.message);
+        return;
+    }
+
+    if (profileData.edit) {
+        modus = "edit";
+        updateButtons();
+    } else {
+        alert("Sie haben keine Berechtigung zum Bearbeiten.");
+    }
+};
+
+newBtn.onclick = () => {
+    const tbody = document.querySelector("#sus tbody");
+    const rows = tbody.querySelectorAll("tr");
+
+    let maxId = 0;
+
+    rows.forEach(row => {
+        const id = Number(row.querySelector('[data-field="id"]').textContent);
+        if (id > maxId) {
+            maxId = id;
+        }
+    });
+
+    const neueId = maxId + 1;
+    const tr = document.createElement("tr");
+    tr.dataset.new = "true";
+
+    tr.innerHTML = `
+        <td data-field="id">${neueId}</td>
+        <td data-field="klasse"><input type="text"></td>
+        <td data-field="name"><input type="text"></td>
+        <td data-field="mail"><input type="text"></td>
+        <td data-field="zugeordnet">
+        <td data-field="erstwunsch"><input type="text" value="0"></td>
+        <td data-field="zweitwunsch"><input type="text"></td>
+        <td data-field="drittwunsch"><input type="text"></td>
+    `;
+
+    tbody.appendChild(tr);
+    
+    const tdProjekt = tr.querySelector('[data-field="zugeordnet"]');
+    const select = document.createElement("select");
+    const leer = document.createElement("option");
+    leer.value = "";
+    leer.textContent = "";
+    select.appendChild(leer);
+
+    Object.entries(projekte).forEach(([id, projekt]) => {
+        const option = document.createElement("option");
+
+        option.value = id;
+        option.textContent = `${id} - ${projekt.titel}`;
+
+        if (projekt.status !== true) {
+            option.disabled = true;
+            option.textContent += " (abgesagt)";
+        } else if (projekt.frei <= 0) {
+            option.disabled = true;
+            option.textContent += " (voll)";
+        }
+
+        select.appendChild(option);
+    });
+    tdProjekt.appendChild(select);
+};
+
+async function schreibeLog(action, vorher = null) {
+    const {
+        data: { user },
+        error: userError
+    } = await client.auth.getUser();
+
+    if (userError || !user) {
+        throw new Error("Kein eingeloggter Benutzer für das Log gefunden.");
+    }
+
+    const { error } = await client
+        .from("kat_sus_logs")
+        .insert({
+            action: action,
+            vorher: vorher,
+            user: user.id
+        });
+
+    if (error) {
+        console.error("Fehler beim Schreiben des Logs:", error);
+        throw new Error(`Log konnte nicht gespeichert werden: ${error.message}`);
+    }
+}
+
+saveBtn.onclick = async () => {
+    if (modus !== "edit") return;
+
+    if (!confirm("Sind Sie sich sicher, dass Sie die Änderungen hochladen und bisherige Schülerdaten überschreiben wollen?")) {
+        return;
+    }
+
+    try{
+
+        const loader = document.getElementById("loader");
+        loader.style.display = "block";
+
+        const rows = document.querySelectorAll("#sus tbody tr");
+        for (const row of rows) {
+            const updateData = {};
+            let id = null;
+
+            row.querySelectorAll("td[data-field]").forEach(td => {
+                const field = td.dataset.field;
+
+                if (field === "id") {
+                    id = Number(td.textContent);
+                    return;
+                }
+
+                const feld = td.querySelector("input, select");
+                let value = feld ? feld.value : td.textContent;
+
+                // Zahlen umwandeln
+                if (["zugeordnet"].includes(field)) {
+                    value = value === "" ? null : Number(value);
+                }
+
+                updateData[field] = value;
+            });
+
+            let error;
+            if (row.dataset.new === "true") {
+
+                updateData.id = id;
+
+                ({ error } = await client
+                    .from("kat_sus")
+                    .insert(updateData));
+
+                if (error) {
+                    console.error(error);
+                    alert(`Fehler bei Schüler ${id}: ${error.message}`);
+                    return;
+                }
+
+                try {
+                    await schreibeLog(
+                        `neuer Schüler angelegt: ${updateData.name ?? ""} (${id})`
+                    );
+                } catch (logError) {
+                    console.error(logError);
+                    alert(
+                        `Schüler ${id} wurde erfolgreich angelegt, ` +
+                        `aber der Änderungsverlauf konnte nicht gespeichert werden: ` +
+                        logError.message
+                    );
+                }
+            }
+            
+            else {
+                const { data: alterSchueler, error: selectError } = await client
+                    .from("kat_sus")
+                    .select("*")
+                    .eq("id", id)
+                    .single();
+
+                if (selectError) {
+                    console.error(selectError);
+                    alert(`Fehler beim Laden des bisherigen Schülers ${id}: ${selectError.message}`);
+                    return;
+                }
+
+                ({ error } = await client
+                    .from("kat_sus")
+                    .update(updateData)
+                    .eq("id", id));
+
+                if (error) {
+                    console.error(error);
+                    alert(`Fehler bei Schüler ${id}: ${error.message}`);
+                    return;
+                }
+
+                // Für jedes tatsächlich geänderte Feld einen eigenen Logeintrag schreiben
+                for (const feld of Object.keys(logFeldnamen)) {
+                    const alterWert = alterSchueler[feld];
+                    const neuerWert = updateData[feld];
+
+                    const alterVergleich =
+                        alterWert === null || alterWert === undefined
+                            ? ""
+                            : String(alterWert);
+
+                    const neuerVergleich =
+                        neuerWert === null || neuerWert === undefined
+                            ? ""
+                            : String(neuerWert);
+
+                    if (alterVergleich !== neuerVergleich) {
+                        try {
+                            await schreibeLog(
+                                `${alterSchueler.name ?? ""} (${id}) | ` +
+                                `${logFeldnamen[feld]}: ${neuerVergleich}`,
+                                alterVergleich
+                            );
+                        } catch (logError) {
+                            console.error(logError);
+                            alert(
+                                `Schüler ${id} wurde erfolgreich gespeichert, ` +
+                                `aber der Änderungsverlauf konnte nicht gespeichert werden: ` +
+                                logError.message
+                            );
+                        }
+                    }
+                }
+            }
+
+            if (error) {
+                console.error(error);
+                alert(`Fehler bei Sch&uuml;ler ${id}: ${error.message}`);
+                return;
+            }
+        }
+    }
+
+    finally{
+        document.getElementById("loader").style.display = "none";
+    }
+
+    modus = "view";
+    projektAenderungSchueler = null;
+
+    updateButtons();
+    alert("Alle Änderungen wurden gespeichert.");
+
+    await ladeProjekte();
+    await ladeSchueler();
+    location.reload();
+};
+updateButtons();
+
+async function askForLogs() {
+    const { data: logs, error: logsError } = await client
+        .from("kat_sus_logs")
+        .select("*")
+        .order("id", { ascending: false });
+
+    if (logsError) {
+        console.error(logsError);
+        alert(`Fehler beim Laden der Logs: ${logsError.message}`);
+        return;
+    }
+
+    const { data: profile, error: profileError } = await client
+        .from("profile")
+        .select("uid, name");
+
+    if (profileError) {
+        console.error(profileError);
+        alert(`Fehler beim Laden der Benutzer: ${profileError.message}`);
+        return;
+    }
+
+    const namen = {};
+    profile.forEach(person => {
+        namen[person.uid] = person.name;
+    });
+
+
+    const tbody = document.querySelector("#logs table tbody");
+    tbody.innerHTML = "";
+
+
+    logs.forEach(log => {
+        const tr = document.createElement("tr");
+
+        const datum =
+            new Date(log.created_at).toLocaleDateString("de-DE") +
+            " um " +
+            new Date(log.created_at).toLocaleTimeString("de-DE", {
+                hour: "2-digit",
+                minute: "2-digit"
+            }) +
+            " Uhr";
+
+        const benutzername = namen[log.user] ?? "Unbekannter Benutzer";
+
+        tr.innerHTML = `
+            <td>${log.id}</td>
+            <td>${log.action}</td>
+            <td>${log.vorher ?? ""}</td>
+            <td>${benutzername}</td>
+            <td>${datum}</td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+}
+
+async function openlogs() {
+    await askForLogs();
+    openElement("logs");
+}
+
+let projekte = {};
+
+async function ladeProjekte() {
+    const { data: projekteData, error } = await client
+        .from("kat_projekte")
+        .select("id, titel, plaetze, status")
+        .order("id");
+
+    if (error) {
+        console.error("Fehler beim Laden der Projekte:", error);
+        return;
+    }
+
+    // Schüler laden
+    const { data: schueler, error: schuelerError } = await client
+        .from("kat_sus")
+        .select("zugeordnet");
+
+    if (schuelerError) {
+        console.error("Fehler beim Laden der Schüler:", schuelerError);
+        return;
+    }
+
+    // Anzahl belegter Plätze pro Projekt berechnen
+    const belegt = {};
+
+    schueler.forEach(s => {
+        if (s.zugeordnet != null) {
+            belegt[s.zugeordnet] = (belegt[s.zugeordnet] || 0) + 1;
+        }
+    });
+
+    projekte = {};
+
+    projekteData.forEach(p => {
+        const plaetze = Number(p.plaetze) || 0;
+        const anzahlBelegt = belegt[p.id] || 0;
+        const frei = plaetze - anzahlBelegt;
+
+        projekte[p.id] = {
+            titel: p.titel,
+            plaetze: plaetze,
+            belegt: anzahlBelegt,
+            frei: frei,
+            status: p.status
+        };
+    });
+    console.log("Geladene Projekte:", projekte);
+}
+
+async function ladeSchueler(sortierung = "id") {
+    const tbody = document.querySelector("#sus tbody");
+    tbody.innerHTML = "";
+
+    let query = client
+        .from("kat_sus")
+        .select(`
+            id,
+            klasse,
+            name,
+            mail,
+            zugeordnet,
+            erstwunsch,
+            zweitwunsch,
+            drittwunsch
+        `)
+        .order(sortierung);
+
+    if (sortierung !== "name") {
+        query = query.order("name");
+    }
+
+    const { data: schuelerData, error } = await query;
+
+    if (error) {
+        console.error("Fehler beim Laden der Schüler:", error);
+        return;
+    }
+
+    schuelerData.forEach(s => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+            <td data-field="id">${s.id ?? ""}</td>
+            <td data-field="klasse">${s.klasse ?? ""}</td>
+            <td data-field="name">${s.name ?? ""}</td>
+            <td data-field="mail" class="mail" data-mail="${s.mail ?? ""}" title="Klicken zum Kopieren">${s.mail ?? ""}</td>
+            <td data-field="zugeordnet">${s.zugeordnet ?? ""}${projekte[s.zugeordnet] ? " - " + projekte[s.zugeordnet].titel : ""}</td>
+            <td data-field="erstwunsch">${s.erstwunsch ?? ""}</td>
+            <td data-field="zweitwunsch">${s.zweitwunsch ?? ""}</td>
+            <td data-field="drittwunsch">${s.drittwunsch ?? ""}</td>
+        `;
+
+        tbody.appendChild(tr);
+        
+        const zelle = tr.querySelector(".mail");
+        zelle.style.cursor = "pointer";
+        zelle.addEventListener("click", async () => {
+            if (modus === "edit") return;
+
+            const mail = zelle.dataset.mail;
+            if (!mail) return;
+
+            await navigator.clipboard.writeText(mail);
+
+            zelle.textContent = "Kopiert ✓";
+            zelle.title = "E-Mail wurde kopiert";
+
+            setTimeout(() => {
+                zelle.textContent = mail;
+                zelle.title = "Klicken zum Kopieren";
+            }, 3000);
+        });
+    });
+    filterTabelle();
+}
+ladeProjekte();
+ladeSchueler();
+
+document.querySelectorAll("#sus thead img").forEach(img => {
+    img.addEventListener("click", () => {
+        ladeSchueler(img.dataset.sort);
+    });
+});
+</script>
+<script type="module" src="download.js"></script>
+</body>
+
+</html>

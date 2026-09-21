@@ -1,0 +1,404 @@
+body {           
+    z-index: 0;
+    height: 150vh;
+}
+
+main {
+    width: 80%;
+    margin: 5% 10% 5% 10%; 
+    padding-bottom: 5%;
+    position: relative;
+}
+
+#openNav {
+    top: 0;
+    right: 3%;
+    padding-top: 10px;
+}
+
+#openLightbox {
+    top: 0px;
+    right: -32px;
+}
+
+main > div:not(#filter) {
+    position: absolute;
+    display: flex;
+    right: 18%;
+    top: 0;
+    width: 155px;
+    height: 60px;
+}
+
+main > div button:not(#filter button), main > button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    height: 60px;
+    cursor: pointer;
+}
+
+main > button:not(#filter button):hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+main > div button img, main > button img {
+    height: 100%;
+    width: 100%;
+}
+
+#viewBtn {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    width: 75px;
+}
+
+#editBtn {
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    width: 80px;
+}
+
+main > button {
+    position: absolute;
+    right: 10px;
+    top: 0;
+    width: 80px;
+    border-radius: 10px;
+}
+
+#saveBtn {
+    right: 75px;
+}
+
+#openDownDrop {
+    padding: 0 10px;
+    height: auto;
+    width: 80px;
+}
+
+#downDrop {
+    background-color: white;
+    color: black;
+    position: absolute;
+    cursor: pointer;
+    border-radius: 5px;
+    right: 0;
+    top: 60px;
+    padding: 10px;
+}
+
+#filter {
+    display: flex;
+    margin-top: 80px;
+}
+
+#filter p {
+    padding: 7px;
+    margin: 0;
+}
+
+.select {
+    position: relative;
+}
+
+.selected {
+    border: 1px solid white;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding-left: 15px;
+    width: 150px;
+    height: 35px;
+}
+
+.options {
+    display: none;
+    position: absolute;
+    background-color: rgb(28, 80, 67);
+    z-index: 3;
+    width: 150px;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+}
+
+.options div {
+    cursor: pointer;
+    padding: 10px 15px;
+}
+
+.options div:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+        
+.select.open .options {
+    display: block;
+}
+
+#optionsLightbox {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    display: none;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+#filter p:nth-of-type(2) {
+    margin: 0 10px 0 10px;
+}
+
+#filter input {
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    border-radius: 7px;
+    outline: none;
+    height: 30px;
+    margin-left: px;
+    padding-left: 10px;
+}
+
+table {
+    border-collapse: collapse;
+    z-index: 0;
+    table-layout: fixed;
+}
+
+#sus {
+    margin-top: 50px;
+}
+
+table thead {
+    position: sticky;
+    background-color: #15202a;
+    top: 0;
+    z-index: 1;
+    border-bottom: 2px solid grey;
+}
+
+#sus thead tr td {
+    padding-top: 20px;
+}
+
+#sus  thead tr td,
+#susNeu  thead tr td {
+    border: none;
+    font-weight: bold;
+}
+
+#sus  thead tr td:nth-of-type(4),
+#susNeu  thead tr td:nth-of-type(4) {
+    cursor: auto;
+}
+
+#sus  thead img,
+#susNeu  thead img {
+    height: 0.8rem;
+    width: auto;
+    display: inline;
+    margin-left: 3px;
+    margin: 0 0 -4px -2px;
+    padding: 4px 5px;
+    cursor: pointer;
+}
+
+#sus  thead img:hover,
+#susNeu  thead img:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
+
+#sus  tr:not(thead tr):hover,
+#susNeu  tr:not(thead tr):hover {
+    background-color: rgb(28, 80, 67); /* #1c5043 */
+}
+
+#sus  tr td,
+#susNeu  tr td {
+    padding: 7px 10px;
+    border: 1px solid grey;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#sus  tr th,
+#susNeu  tr th {
+    text-align: left;
+    padding-left: 10px;
+    align-items: flex-end;
+}
+
+#sus  tr td:nth-of-type(6),
+#sus  tr td:nth-of-type(7),
+#sus  tr td:nth-of-type(8),
+#susNeu  tr td:nth-of-type(6),
+#susNeu  tr td:nth-of-type(7),
+#susNeu  tr td:nth-of-type(8) {
+    color: grey;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 50px;
+}
+
+#sus  tr td:nth-of-type(6) img,
+#sus  tr td:nth-of-type(7) img,
+#sus  tr td:nth-of-type(8) img,
+#susNeu  tr td:nth-of-type(6) img,
+#susNeu  tr td:nth-of-type(7) img,
+#susNeu  tr td:nth-of-type(8) img {
+    opacity: 0.5;
+}
+
+#sus  tr > :nth-child(1),
+#susNeu  tr > :nth-child(1) {
+    width: 25px;
+}
+
+#sus  tr > :nth-child(2),
+#susNeu  tr > :nth-child(2) {
+    width: 50px;
+}
+
+#sus  tr > :nth-child(3),
+#susNeu  tr > :nth-child(3) {
+    width: 200px;
+}
+
+#sus  tr > :nth-child(4),
+#susNeu  tr > :nth-child(4) {
+    width: 300px;
+}
+
+#sus  tr > :nth-child(5),
+#susNeu  tr > :nth-child(5) {
+    width: 350px;
+}
+
+#sus input {
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    padding: 0;
+    color: white;
+}
+
+#new {
+    display: none;
+    width: 100%;
+}
+
+#openOptions {
+    margin-top: 50px;
+    cursor: pointer;
+}
+
+#openOptions img {
+    height: 1rem;
+    width: auto;
+    margin-left: 5px;
+}
+
+#options li {
+    margin-top: 8px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#logs {
+    background-color: rgba(0, 0, 0, 0.85);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 2;
+}
+
+#logs > div {
+    margin: 5% auto;
+    width: 70%;  
+    position: relative;
+}
+
+#logs h1 {
+    margin-bottom: 100px;
+}
+
+#logs > div > img {  
+    width: 50px;
+    height: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+}
+
+#logs table thead {  
+    font-weight: bold;
+}
+
+#logs table thead tr td {
+    border: none;
+}
+
+#logs tr > :nth-child(1) {
+    width: 50px;
+}
+
+#logs tr > :nth-child(2) {
+    width: 800px;
+}
+
+#logs tr > :nth-child(3) {
+    width: 220px;
+}
+
+#logs tr > :nth-child(4) {
+    width: 120px;
+}
+
+#logs tr > :nth-child(5) {
+    width: 280px;
+}
+
+table {
+    border-collapse: collapse;
+    z-index: 0;
+    table-layout: fixed;
+    width: max-content;
+}
+
+table tbody tr:nth-of-type(1) {
+    border-top: 2px solid grey;
+}
+
+table tr:not(thead tr):hover {
+    background-color: rgb(28, 80, 67); /* #1c5043 */
+}
+
+table tr td {
+    padding: 7px 10px;
+    border: 1px solid grey;
+}
+
+table tr th {
+    text-align: left;
+    padding-left: 10px;
+    align-items: flex-end;
+}
+
+@media (max-width: 768px) {        
+    body {
+        height: auto;
+    }
+}

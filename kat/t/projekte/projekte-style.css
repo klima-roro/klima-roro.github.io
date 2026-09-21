@@ -1,0 +1,390 @@
+body {           
+    z-index: 0;
+    height: 150vh;
+}
+
+#openNav {
+    top: 0;
+    right: 3%;
+    padding-top: 10px;
+}
+
+#openLightbox {
+    top: 0px;
+    right: -45px;
+}
+
+main {
+    width: 79%;
+    margin: 5% 10% 5% 10%; 
+    position: relative;
+}
+
+main > div {
+    position: absolute;
+    display: flex;
+    right: 18%;
+    top: 0;
+    width: 155px;
+    height: 60px;
+}
+
+main > div button, main > button {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    height: 60px;
+    cursor: pointer;
+}
+
+/* main > div button:hover {
+    border: 1px solid white;
+} */
+
+main > button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+main > div button img, main > button img {
+    height: 100%;
+    width: 100%;
+}
+
+#viewBtn {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-top-left-radius: 30px;
+    border-bottom-left-radius: 30px;
+    width: 75px;
+}
+
+#editBtn {
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    width: 80px;
+}
+
+main > button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 80px;
+    border-radius: 10px;
+}
+
+#saveBtn {
+    right: 75px;
+}
+
+#openDownDrop {
+    padding: 0 10px;
+    height: auto;
+    width: 80px;
+}
+
+#downDrop {
+    background-color: white;
+    color: black;
+    position: absolute;
+    cursor: pointer;
+    border-radius: 5px;
+    right: 0;
+    top: 60px;
+    padding: 10px;
+}
+
+table {
+    border-collapse: collapse;
+    z-index: 0;
+    table-layout: fixed;
+    width: max-content;
+}
+
+table tbody tr:nth-of-type(1) {
+    border-top: 2px solid grey;
+}
+
+table tr:not(thead tr, tr.abgesagt):hover {
+    background-color: rgb(28, 80, 67); /* #1c5043 */
+}
+
+table tr.abgesagt {
+    color: grey;
+}
+
+table tr td {
+    padding: 7px 10px;
+    border: 1px solid grey;
+}
+
+table tr th {
+    text-align: left;
+    padding-left: 10px;
+    align-items: flex-end;
+    padding-top: 20px;
+}
+
+#projekte {
+    z-index: 0;
+    margin-top: 100px;
+}
+
+#projekte thead {
+    position: sticky;
+    background-color: #15202a;
+    top: 0;
+    z-index: 1;
+}
+
+#projekte tr > :nth-child(1),
+#projekteNeu tr > :nth-child(1) {
+    width: 30px;
+}
+
+#projekte tr > :nth-child(2),
+#projekteNeu tr > :nth-child(2) {
+    width: 300px;
+}
+
+#projekte tr > :nth-child(3),
+#projekteNeu tr > :nth-child(3) {
+    width: 50px;
+}
+
+#projekte tr > :nth-child(4),
+#projekteNeu tr > :nth-child(4) {
+    width: 50px;
+}
+
+#projekte tr > :nth-child(5),
+#projekteNeu tr > :nth-child(5) {
+    width: 60px;
+}
+
+#projekte tr > :nth-child(6),
+#projekteNeu tr > :nth-child(6) {
+    width: 60px;
+}
+
+#projekte tr > :nth-child(7),
+#projekteNeu tr > :nth-child(7) {
+    width: 60px;
+}
+
+#projekte tr > :nth-child(8),
+#projekteNeu tr > :nth-child(8) {
+    width: 300px;
+}
+
+#projekte tr > :nth-child(9),
+#projekteNeu tr > :nth-child(9) {
+    width: 300px;
+}
+
+#projekte tr > :nth-child(10),
+#projekteNeu tr > :nth-child(10) {
+    width: 100px;
+}
+
+#projekte tr > :nth-child(11),
+#projekteNeu tr > :nth-child(11) {
+    width: 60px;
+}
+
+#projekte tr > :nth-child(12),
+#projekteNeu tr > :nth-child(12) {
+    width: 60px;
+}
+
+#projekte tr > :nth-child(13),
+#projekteNeu tr > :nth-child(13) {
+    width: 300px;
+}
+
+#projekte tr > :nth-child(14),
+#projekteNeu tr > :nth-child(14) {
+    width: 200px;
+}
+
+#projekte input {
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    padding: 0;
+    color: white;
+}
+
+#openOptions {
+    margin-top: 50px;
+    cursor: pointer;
+}
+
+#openOptions img {
+    height: 1rem;
+    width: auto;
+    margin-left: 5px;
+}
+
+#options li {
+    margin-top: 8px;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+#projektabsagung, #logs {
+    background-color: rgba(0, 0, 0, 0.85);
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    z-index: 2;
+}
+
+#projektabsagung > div, #logs > div {
+    margin: 5% auto;
+    width: 70%;  
+    position: relative;
+}
+
+#projektabsagung h1, #logs h1 {
+    margin-bottom: 100px;
+}
+
+#projektabsagung > div > img, #logs > div > img {  
+    width: 50px;
+    height: auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+}
+
+#projektabsagung select {
+    background-color: white;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    margin-left: 10px;
+}
+
+#absageInfo {
+    margin-top: 50px;
+}
+
+#projektabsagung table {
+    display: none;
+}
+
+#projektabsagung table, #logs table {
+    table-layout: fixed;
+}
+
+#projektabsagung tr > :nth-child(1) {
+    width: 40px;
+}
+
+#projektabsagung tr > :nth-child(2) {
+    width: 50px;
+}
+
+#projektabsagung tr > :nth-child(3) {
+    width: 200px;
+}
+
+#projektabsagung tr > :nth-child(4) {
+    width: 300px;
+}
+
+#projektabsagung tr > :nth-child(5) {
+    width: 400px;
+}
+
+#projektabsagung tr > :nth-child(6),
+#projektabsagung tr > :nth-child(7),
+#projektabsagung tr > :nth-child(8) {
+    width: 60px;
+}
+
+#projektabsagung > div > div {
+    display: none;
+    gap: 10px;  
+    position: absolute;  
+    right: 0;
+    margin-top: 30px;
+}
+
+#downloadAbsage {
+    background-color: transparent;
+    outline: none;
+    border: none;
+    width: 80px;
+    border-radius: 10px;
+}
+
+#downloadAbsage img {
+    width: 100%;
+    height: auto;
+}
+
+#downloadAbsage:hover {
+    cursor: pointer;
+}
+
+#absagen {  
+    height: 2.5rem;
+    padding: 5px 20px;
+    background-color: white;
+    outline: none;
+    border: none;
+    border-radius: 10px;
+    margin-top: 16px;
+}
+
+#absagen:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+}
+
+#logs table thead {
+    background-color: #15202a;
+    border-bottom: 2px solid grey;
+}
+
+#logs table thead {  
+    font-weight: bold;
+}
+
+#logs table thead tr td {
+    border: none;
+}
+
+#logs tr > :nth-child(1) {
+    width: 50px;
+}
+
+#logs tr > :nth-child(2) {
+    width: 800px;
+}
+
+#logs tr > :nth-child(3) {
+    width: 220px;
+}
+
+#logs tr > :nth-child(4) {
+    width: 120px;
+}
+
+#logs tr > :nth-child(5) {
+    width: 280px;
+}
+
+@media (max-width: 768px) {        
+    body {
+        height: auto;
+    }
+}

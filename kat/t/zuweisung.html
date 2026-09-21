@@ -22,7 +22,7 @@
         }
 
         main {
-            width: 90%;
+            width: 80%;
             margin: 5% 0 5% 10%; 
             position: relative;
             z-index: 0;
@@ -101,6 +101,7 @@
             position: sticky;
             top: 0;
             background-color: #15202a;
+            border-bottom: 2px solid grey;
         }
 
         #out table tr > :nth-child(1) {
@@ -209,8 +210,8 @@
             </div>
             <li data-href="meine-klasse.html">Meine Klasse</li>
             <li data-href="mein-projekt.html">Mein Projekt</li>
-            <li data-href="sus.html" class="navEdit">Sch&uuml;ler&uuml;bersicht</li>
-            <li data-href="projekte.html" class="navEdit">Projekte&uuml;bersicht</li>
+            <li data-href="sus" class="navEdit">Sch&uuml;ler&uuml;bersicht</li>
+            <li data-href="projekte" class="navEdit">Projekte&uuml;bersicht</li>
             <li data-href="zuweisung.html" class="navEdit hier">Zuweisung</li>
         </ul>
         <ul>
@@ -297,60 +298,7 @@ async function loginCheck() {
     }
 }
 loginCheck();
-
-async function checkOrga() {
-    const navEdit = document.querySelectorAll(".navEdit");
-    const { data: { user } } = await client.auth.getUser();
-
-    const { data, error } = await client
-        .from("profile")
-        .select("orga")
-        .eq("uid", user.id)
-        .single();
-
-    if (error) {
-        console.error(error);
-        alert(error.message);
-        return;
-    }
-
-    if (data.orga) {
-        navEdit.forEach(li => {
-            li.style.display = "block";
-        });
-
-    } else {
-        navEdit.forEach(li => {
-            li.style.display = "none";
-        });
-    }
-}
 checkOrga();
-
-const lightbox = document.getElementById("lightbox");
-document.getElementById("openLightbox").onclick = () => {
-    if (getComputedStyle(lightbox).display === "none") {
-        lightbox.style.display = "block";
-    }
-}
-
-lightbox.onclick = (e) => {
-    if (e.target === lightbox) {
-        lightbox.style.display = "none";
-    }
-}
-
-if (window.matchMedia("(max-width: 768px)").matches) {
-    document.querySelector("main").style.display = "none";
-    document.getElementById("openLightbox").style.display = "none";
-    document.getElementById("mobile").style.display = "block";
-}
-
-document.getElementById("goYourWay").onclick = () => {
-    document.querySelector("main").style.display = "block";
-    document.getElementById("openLightbox").style.display = "block";
-    document.getElementById("mobile").style.display = "none";
-}
 </script>
 
 <script>
@@ -420,15 +368,18 @@ if (ungueltigeKlassen.length > 0) {
     });
 
     // Projekte laden
-    const { data: projekte, error: projekteError } = await client
+    const { data: projektdata, error: projekteError } = await client
         .from("kat_projekte")
         .select("*")
+        .eq("status", true)
         .order("id");
 
     if (projekteError) {
         alert(projekteError.message);
         return;
     }
+
+    const projekte = projektdata;
 
     // Bereits zugeordnete Schüler laden
     const { data: vorhandene, error: schuelerError } = await client
@@ -464,23 +415,29 @@ if (ungueltigeKlassen.length > 0) {
         cap[p.id] = Math.max(0, frei);
     });
 
-// Erste Vergabe
-for (const s of sch) {
+    // Erste Vergabe
+    for (const s of sch) {
 
-    for (const w of [s.Erstwunsch, s.Zweitwunsch, s.Drittwunsch]) {
+        for (const [index, w] of [s.Erstwunsch, s.Zweitwunsch, s.Drittwunsch].entries()) {
 
-        const projekt = projekte.find(p => p.id == w);
+            // Projekt 0 darf ausschließlich als Erstwunsch vergeben werden
+            if (Number(w) === 0 && index !== 0) {
+                continue;
+            }
 
-        if (
-            stufenfilter(s, projekt) &&
-            cap[w] > 0
-        ) {
-            s["zugeordnetes Projekt"] = w;
-            cap[w]--;
-            break;
+            const projekt = projekte.find(p => p.id == w);
+
+            if (
+                stufenfilter(s, projekt) &&
+                cap[w] > 0
+            ) {
+                s["zugeordnetes Projekt"] = w;
+                cap[w]--;
+                break;
+            }
         }
+
     }
-}
 
     // Nachvergabe
     let changed = true;
@@ -493,13 +450,18 @@ for (const s of sch) {
             }
 
             const wishes = [s.Erstwunsch, s.Zweitwunsch, s.Drittwunsch];
-            for (const target of wishes) {
+            for (const [index, target] of wishes.entries()) {
 
-const zielProjekt = projekte.find(p => p.id == target);
+                // Projekt 0 darf nur als Erstwunsch verwendet werden
+                if (Number(target) === 0 && index !== 0) {
+                    continue;
+                }
 
-if (!stufenfilter(s, zielProjekt)) {
-    continue;
-}
+                const zielProjekt = projekte.find(p => p.id == target);
+
+                if (!stufenfilter(s, zielProjekt)) {
+                    continue;
+                }
                 let moved = false;
                 for (const o of sch) {
 
@@ -553,11 +515,17 @@ for (const alt of [o.Zweitwunsch, o.Drittwunsch]) {
             continue;
         }
 
-const freiesProjekt = Object.keys(cap)
-    .find(id => {
-        const projekt = projekte.find(p => p.id == id);
-        return cap[id] > 0 && stufenfilter(s, projekt);
-    });
+    const freiesProjekt = Object.keys(cap)
+        .find(id => {
+            const projekt = projekte.find(p => p.id == id);
+
+            // Projekt 0 niemals als Restplatz vergeben
+            if (Number(id) === 0) {
+                return false;
+            }
+
+            return cap[id] > 0 && stufenfilter(s, projekt);
+        });
     
         if (freiesProjekt) {
             s["zugeordnetes Projekt"] = Number(freiesProjekt);
