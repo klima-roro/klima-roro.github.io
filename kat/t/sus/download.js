@@ -107,8 +107,8 @@ async function downloadAsPdf() {
         // Template auswählen
         const templateName =
             tableRows.length > 33
-                ? "../../m/template_schueleruebersicht_2.json"
-                : "../../m/template_schueleruebersicht.json";
+                ? "../../m/template_sus_2.json"
+                : "../../m/template_sus.json";
 
         console.log("Template:", templateName);
         const template = await fetch(templateName).then(r => r.json());

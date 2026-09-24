@@ -77,8 +77,8 @@ async function downloadAsPdf() {
         // Template auswählen
         const templateName =
             tableRows.length > 33
-                ? "../../m/template_projektuebersicht_2.json"
-                : "../../m/template_projektuebersicht.json";
+                ? "../../m/template_projekte_2.json"
+                : "../../m/template_projekte.json";
 
         console.log("Template:", templateName);
         const template = await fetch(templateName).then(r => r.json());
