@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">   
     <meta charset="UTF-8">
 
-    <link rel="icon" type="image/png" href="../../../../favicon.ico">
-    <link rel="stylesheet" href="../../../../stylesheet.css" type="text/css">
+    <link rel="icon" type="image/png" href="../../favicon.ico">
+    <link rel="stylesheet" href="../../stylesheet.css" type="text/css">
     <link rel="stylesheet" href="projekte-style.css" type="text/css">
 </head>
 <body>
-    <img id="openNav" src="../../../../b/menue2.png" title="Menü" alt="Buergermenue">
+    <img id="openNav" src="../../b/menue2.png" title="Menü" alt="Buergermenue">
     <nav>
         <ul>
             <div>
@@ -31,16 +31,16 @@
     </nav>
     
     <main>
-        <img id="openLightbox" src="../../../../b/hilfe.png" title="Hilfe">
+        <img id="openLightbox" src="../../b/hilfe.png" title="Hilfe">
 
         <h1>Projekte</h1>
 
         <div>
-            <button id="viewBtn" title="Betrachter-Modus"><img src="../../../../b/view_2.png" alt="Symbolbild eines Auges"></button>
-            <button id="editBtn" title="Bearbeitungsmodus"><img src="../../../../b/edit.png" alt="Symbolbild eines Stiftes"></button>
+            <button id="viewBtn" title="Betrachter-Modus"><img src="../../b/view_2.png" alt="Symbolbild eines Auges"></button>
+            <button id="editBtn" title="Bearbeitungsmodus"><img src="../../b/edit.png" alt="Symbolbild eines Stiftes"></button>
         </div>
-        <button id="saveBtn" title="Speichern"><img src="../../../../b/save.png" alt="Symbolbild einer Diskette"></button>
-        <button id="openDownDrop" title="eine Kopie als PDF herunterladen"><img src="../../../../b/download.png" alt="Pfeil aus Wolke nach unten"></button>
+        <button id="saveBtn" title="Speichern"><img src="../../b/save.png" alt="Symbolbild einer Diskette"></button>
+        <button id="openDownDrop" title="eine Kopie als PDF herunterladen"><img src="../../b/download.png" alt="Pfeil aus Wolke nach unten"></button>
 
         <select id="downDrop" style="display: none;">
             <option>Format wählen</option>
@@ -72,7 +72,7 @@
 
         <table id="projekteNeu"><tr><td id="new" style="display: none;">+</td></tr></table>
 
-        <p id="openOptions" onclick="openElement('options'); changeArrow()">erweiterte Optionen <img src="../../../../b/arrow.png" alt="Pfeil nach unten"></p>
+        <p id="openOptions" onclick="openElement('options'); changeArrow()">erweiterte Optionen <img src="../../b/arrow.png" alt="Pfeil nach unten"></p>
         <ul id="options" style="display: none;">
             <li onclick="changeOverflow('projektabsagung'); openProjektabsagung();" title="ein Projekt absagen und alle Sch&uuml;ler neuverteilen">Projekt absagen</li>
             <li onclick="changeOverflow('logs'); openlogs();" title="alle &Auml;nderungen einsehen">&Auml;nderungsverlauf einsehen</li>
@@ -83,7 +83,7 @@
     <div id="projektabsagung" style="display: none;">
         <div>
             <h1>Projekt absagen</h1>
-            <img src="../../../../b/exit.png" alt="Kreuz" onclick="changeOverflow('projektabsagung'); openElement('projektabsagung'); closeProjektabsage();">
+            <img src="../../b/exit.png" alt="Kreuz" onclick="changeOverflow('projektabsagung'); openElement('projektabsagung'); closeProjektabsage();">
             <p>Projekt w&auml;hlen: <select id="absageProjektSelect"></select></p>
             <p id="absageInfo"></p>
             
@@ -104,7 +104,7 @@
             </table>
             
             <div>
-                <button id="downloadAbsage"><img src="../../../../b/download.png" alt="Download-Symbol" title="Liste ge&auml;nderter Sch&uuml;ler herunterladen"></img></button>
+                <button id="downloadAbsage"><img src="../../b/download.png" alt="Download-Symbol" title="Liste ge&auml;nderter Sch&uuml;ler herunterladen"></img></button>
                 <button id="absagen">Projekt absagen</button>
             </div>
         </div>
@@ -113,7 +113,7 @@
     <div id="logs" style="display: none;">
         <div>
             <h1>&Auml;nderungsverlauf</h1>
-            <img src="../../../../b/exit.png" alt="Kreuz" onclick="changeOverflow('logs'); openElement('logs');">
+            <img src="../../b/exit.png" alt="Kreuz" onclick="changeOverflow('logs'); openElement('logs');">
             <table>
                 <thead>
                     <tr>
@@ -132,25 +132,25 @@
     <!--div id="versionierung" style="display: none;"></div-->
 
     <div id="lightbox">
-        <img src="../../../../b/projekte-1.png" alt="Anleitung">
-        <img id="lightArrow" src="../../../../b/arrow.png" alt="Pfeil nach unten">
-        <img src="../../../../b/projekte-2.png" alt="Anleitung">
+        <img src="../../b/projekte-1.png" alt="Anleitung">
+        <img id="lightArrow" src="../../b/arrow.png" alt="Pfeil nach unten">
+        <img src="../../b/projekte-2.png" alt="Anleitung">
     </div>
-    <img id="loader" src="../../../../b/logo.png" alt="Logo des Klimarates">
+    <img id="loader" src="../../b/logo.png" alt="Logo des Klimarates">
 
     <div id="mobile">
         <h1>Projekte&uuml;bersicht</h1>
         <div>
-            <button onclick="downloadAsPdf()"><img src="../../../../b/pdf.png" alt="PDF Symbol"></button>
-            <button onclick="downloadAsOds()"><img src="../../../../b/ods.png" alt="ODS Symbol"></button>
+            <button onclick="downloadAsPdf()"><img src="../../b/pdf.png" alt="PDF Symbol"></button>
+            <button onclick="downloadAsOds()"><img src="../../b/ods.png" alt="ODS Symbol"></button>
         </div>
         <div>
-            <button onclick="downloadAsExcel()"><img src="../../../../b/excel.png" alt="Excel Symbol"></button>
+            <button onclick="downloadAsExcel()"><img src="../../b/excel.png" alt="Excel Symbol"></button>
             <button id="goYourWay">Desktop simulieren<br><br>(nicht empfohlen)</button>
         </div>
     </div>
 
-<script src="../../../../script.js"></script>
+<script src="../../script.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
