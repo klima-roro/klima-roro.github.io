@@ -852,8 +852,12 @@ async function ladeSchueler(sortierung = "id") {
     });
     filterTabelle();
 }
-ladeProjekte();
-ladeSchueler();
+
+async function init() {
+    await ladeProjekte();
+    await ladeSchueler();
+}
+init();
 
 document.querySelectorAll("#sus thead img").forEach(img => {
     img.addEventListener("click", () => {
